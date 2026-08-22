@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0D13">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+<title>M&amp;C Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════ TOKENS */
+:root{
+  --bg:#0A0D13;  --panel:#121722;  --panel-2:#161C29;  --sunk:#0E131C;
+  --line:#232B3B; --line-soft:#1A2130;
+  --ink:#EAEFF8;  --ink-2:#93A1B9;  --ink-3:#5E6B84;
+
+  /* series validadas para fondo oscuro */
+  --rev:#2E9BD6;  --spend:#C57F14;  --prof:#17A87C;  --alt:#8B6BE8;
+  /* variantes claras, solo para texto */
+  --rev-t:#5CBFF0; --spend-t:#E4A73F; --prof-t:#3FD9A4; --loss-t:#FF7075;
+  --loss:#C8484D;
+  --m:#4C8FE8;    --c:#17A99A;      --k:#8B6BE8;
+
+  --r:14px; --r-sm:10px;
+  --sh:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  font-feature-settings:"ss01";
+}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+p{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.mono{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ═══════════════════════════════════════════════════ SHELL */
+.app{display:flex;min-height:100vh}
+aside{
+  width:246px;flex:0 0 246px;border-right:1px solid var(--line-soft);
+  background:linear-gradient(180deg,#0C1119,#0A0D13);
+  padding:22px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 22px}
+.brand .mark{
+  width:34px;height:34px;border-radius:9px;flex:0 0 34px;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--prof),#0E7A5B);color:#04140E;
+  font-weight:700;font-size:13px;letter-spacing:-.04em;
+  box-shadow:0 0 0 1px rgba(255,255,255,.07), 0 6px 18px -8px var(--prof);
+}
+.brand b{font-size:15px;font-weight:600;display:block;letter-spacing:-.02em}
+.brand span{font-size:11px;color:var(--ink-3);display:block;margin-top:1px}
+.navgroup{margin-bottom:20px}
+.navgroup > .eyebrow{padding:0 9px 8px}
+.navlink{
+  display:flex;align-items:center;gap:10px;padding:8.5px 10px;border-radius:9px;
+  color:var(--ink-2);font-size:13.5px;font-weight:500;transition:background .14s,color .14s;
+  width:100%;text-align:left;
+}
+.navlink:hover{background:var(--panel);color:var(--ink)}
+.navlink.on{background:var(--panel-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.navlink .dot{width:6px;height:6px;border-radius:50%;flex:0 0 6px;background:var(--ink-3)}
+.navlink.on .dot,.navlink .dot.act{background:var(--prof);box-shadow:0 0 0 3px rgba(23,168,124,.16)}
+.navlink .dot.cer{background:var(--ink-3)}
+.navlink .dot.pau{background:var(--spend)}
+.sidefoot{margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--line-soft);
+  font-size:11px;color:var(--ink-3);line-height:1.6}
+
+main{flex:1;min-width:0;padding:34px 40px 90px;max-width:1320px}
+
+/* barra móvil */
+.topbar{display:none}
+
+/* ═══════════════════════════════════════════════════ CABECERA */
+.pagehead{margin-bottom:26px}
+.pagehead h1{font-size:27px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.pagehead .sub{color:var(--ink-3);font-size:13.5px;margin-top:7px}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 10px;border-radius:100px;border:1px solid;
+}
+.pill.activa{color:var(--prof-t);border-color:rgba(23,168,124,.4);background:rgba(23,168,124,.1)}
+.pill.cerrada{color:var(--ink-2);border-color:var(--line);background:var(--panel)}
+.pill.pausada{color:var(--spend-t);border-color:rgba(197,127,20,.4);background:rgba(197,127,20,.1)}
+
+/* ═══════════════════════════════════════════════════ KPI */
+.kpis{display:grid;gap:14px;margin-bottom:14px}
+.kpis.hero{grid-template-columns:1.55fr 1fr 1fr 1fr}
+.kpis.four{grid-template-columns:repeat(4,1fr)}
+.kpis.six{grid-template-columns:repeat(6,1fr)}
+.card{
+  background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);
+  padding:19px 21px;box-shadow:var(--sh);position:relative;overflow:hidden;
+  transition:border-color .16s, transform .16s;
+}
+.card:hover{border-color:var(--line)}
+.kpi .lbl{display:block;margin-bottom:11px}
+.kpi .v{display:block;font-size:31px;font-weight:600;letter-spacing:-.035em;line-height:1.05}
+.kpi .foot{display:block;margin-top:9px;font-size:12.5px;color:var(--ink-3)}
+.kpi.big .v{font-size:clamp(38px,4.6vw,58px)}
+.kpi.big{background:
+  radial-gradient(120% 130% at 0% 0%, rgba(23,168,124,.13), transparent 58%),
+  var(--panel);}
+.kpi.big.neg{background:
+  radial-gradient(120% 130% at 0% 0%, rgba(200,72,77,.13), transparent 58%),
+  var(--panel);}
+.v.pos{color:var(--prof-t)} .v.neg{color:var(--loss-t)}
+.v.rev{color:var(--rev-t)} .v.spend{color:var(--spend-t)}
+.trendbar{position:absolute;left:0;top:0;bottom:0;width:3px}
+.trendbar.pos{background:var(--prof)} .trendbar.neg{background:var(--loss)}
+.trendbar.rev{background:var(--rev)} .trendbar.spend{background:var(--spend)}
+.trendbar.neutral{background:var(--line)}
+
+/* fila compacta de métricas secundarias */
+.mini{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);
+  border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.mini.c4{grid-template-columns:repeat(4,1fr)} .mini.c3{grid-template-columns:repeat(3,1fr)}
+.mini.c6{grid-template-columns:repeat(6,1fr)}
+.mini > div{background:var(--panel);padding:15px 17px}
+.mini .lbl{display:block;margin-bottom:7px}
+.mini .v{font-size:19px;font-weight:600;letter-spacing:-.025em}
+
+/* ═══════════════════════════════════════════════════ SECCIONES */
+section{margin-top:34px}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  margin-bottom:14px;flex-wrap:wrap}
+.sechead h2{font-size:16.5px}
+.sechead .note{font-size:12.5px;color:var(--ink-3)}
+
+/* estructura activa destacada */
+.spot{
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:linear-gradient(135deg,rgba(23,168,124,.07),transparent 46%),var(--panel);
+  box-shadow:var(--sh);
+}
+.spot.neg{background:linear-gradient(135deg,rgba(200,72,77,.07),transparent 46%),var(--panel)}
+.spot .top{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:19px 22px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.spot .top h3{font-size:19px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.spot .meta{display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3)}
+.spot .meta b{color:var(--ink-2);font-weight:500}
+.spot .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line-soft)}
+.spot .grid > div{background:var(--panel);padding:16px 20px}
+.spot .grid .lbl{display:block;margin-bottom:7px}
+.spot .grid .v{font-size:20px;font-weight:600;letter-spacing:-.025em}
+.spot .cta{padding:13px 22px;border-top:1px solid var(--line-soft);
+  display:flex;justify-content:flex-end}
+.linkbtn{font-size:13px;font-weight:500;color:var(--ink-2);display:inline-flex;
+  align-items:center;gap:7px;padding:6px 12px;border-radius:8px;
+  border:1px solid var(--line);transition:.15s}
+.linkbtn:hover{color:var(--ink);border-color:var(--ink-3);background:var(--panel-2)}
+
+/* ═══════════════════════════════════════════════════ TABLA */
+.tablewrap{border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden;
+  background:var(--panel);box-shadow:var(--sh)}
+.scroller{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:660px}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);text-align:left;padding:13px 16px;
+  border-bottom:1px solid var(--line);white-space:nowrap;background:var(--sunk);
+}
+th.n,td.n{text-align:right}
+tbody td{padding:14px 16px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer;transition:background .13s}
+tbody tr:hover td{background:var(--panel-2)}
+td.name{font-weight:600;letter-spacing:-.01em}
+.empty{padding:44px 22px;text-align:center;color:var(--ink-3);font-size:13.5px}
+.empty .big{display:block;font-size:15px;color:var(--ink-2);margin-bottom:6px;font-weight:500}
+
+/* ═══════════════════════════════════════════════════ GRÁFICOS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chartcard{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);
+  padding:20px 22px 16px;box-shadow:var(--sh)}
+.chartcard h3{font-size:14.5px;margin-bottom:3px}
+.chartcard .cap{font-size:12.5px;color:var(--ink-3);margin-bottom:18px}
+svg.chart{display:block;width:100%;height:auto;overflow:visible}
+.gridline{stroke:var(--line-soft);stroke-width:1}
+/* el tamaño va en unidades del viewBox: al encoger el SVG hay que subirlo
+   o las etiquetas se vuelven ilegibles en pantallas pequeñas */
+.axis{font-family:"JetBrains Mono",monospace;font-size:10px;fill:var(--ink-3)}
+@media (max-width:1180px){ .axis{font-size:13px} }
+@media (max-width:900px){ .axis{font-size:17px} }
+@media (max-width:760px){ .axis{font-size:23px} }
+.zeroline{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
+
+/* barras horizontales */
+.hb{display:grid;grid-template-columns:minmax(96px,auto) 1fr minmax(74px,auto);
+  gap:13px;align-items:center;margin-bottom:11px}
+.hb .l{font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.hb .l.hot{color:var(--ink);font-weight:600}
+.hb .track{display:block;height:9px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.hb .fill{display:block;height:9px;border-radius:5px;min-width:3px;
+  transition:width .5s cubic-bezier(.22,1,.36,1)}
+.hb .v{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  text-align:right;white-space:nowrap}
+.hb .v small{display:block;font-weight:400;color:var(--ink-3);font-size:10px;margin-top:1px}
+
+.legend{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:16px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block;vertical-align:-1px;
+  margin-right:7px}
+.legend span{font-size:12px;color:var(--ink-2)}
+
+/* ═══════════════════════════════════════════════════ AVISOS */
+.alert{display:flex;gap:12px;padding:13px 16px;border-radius:var(--r-sm);font-size:13px;
+  margin-bottom:12px;border:1px solid}
+.alert.info{background:rgba(46,155,214,.08);border-color:rgba(46,155,214,.3);color:var(--ink-2)}
+.alert.error{background:rgba(200,72,77,.1);border-color:rgba(200,72,77,.4);color:#FFB9BB}
+
+/* ═══════════════════════════════════════════════════ TOOLTIP */
+#tip{position:fixed;z-index:99;pointer-events:none;opacity:0;transition:opacity .11s;
+  background:#050810;border:1px solid var(--line);border-radius:9px;padding:9px 12px;
+  font-size:12px;line-height:1.65;box-shadow:0 12px 32px -8px rgba(0,0,0,.9);max-width:250px}
+#tip .t{font-weight:600;margin-bottom:4px;font-size:12px}
+#tip .r{display:flex;justify-content:space-between;gap:16px;
+  font-family:"JetBrains Mono",monospace;font-size:11px}
+#tip .r span:first-child{color:var(--ink-3)}
+
+/* ═══════════════════════════════════════════════════ ANIMACIÓN */
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.anim{animation:rise .42s cubic-bezier(.22,1,.36,1) both}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+/* ═══════════════════════════════════════════════════ RESPONSIVE */
+@media (max-width:1180px){
+  .kpis.hero{grid-template-columns:1fr 1fr}
+  .kpis.six{grid-template-columns:repeat(3,1fr)}
+  .spot .grid{grid-template-columns:repeat(3,1fr)}
+  .mini.c6{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:900px){
+  .grid2{grid-template-columns:1fr}
+  main{padding:26px 24px 80px}
+}
+@media (max-width:760px){
+  aside{display:none}
+  .app{display:block}
+  main{padding:0 16px 80px;max-width:none}
+  .topbar{
+    display:block;position:sticky;top:0;z-index:40;background:rgba(10,13,19,.92);
+    backdrop-filter:blur(14px);border-bottom:1px solid var(--line-soft);
+    margin:0 -16px 20px;padding:12px 16px 0;
+  }
+  .topbar .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .topbar .brand{padding:0 0 12px}
+  .tabs{display:flex;gap:7px;overflow-x:auto;padding:0 0 11px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:7px 13px;border-radius:100px;font-size:12.5px;font-weight:500;
+    color:var(--ink-2);border:1px solid var(--line-soft);background:var(--panel);
+    white-space:nowrap}
+  .tab.on{color:var(--ink);border-color:var(--line);background:var(--panel-2)}
+  .pagehead h1{font-size:22px}
+  .kpis.hero,.kpis.four{grid-template-columns:1fr 1fr}
+  .kpis.hero > .kpi.big{grid-column:1/-1}
+  .kpis.six{grid-template-columns:1fr 1fr}
+  .mini.c4,.mini.c3,.mini.c6{grid-template-columns:1fr 1fr}
+  .spot .grid{grid-template-columns:1fr 1fr}
+  .card{padding:16px 17px}
+  .kpi .v{font-size:25px}
+  .mini .v,.spot .grid .v{font-size:17px}
+  .chartcard{padding:17px 16px 13px}
+  .hb{grid-template-columns:minmax(74px,auto) 1fr minmax(64px,auto);gap:10px}
+}
+@media (max-width:400px){
+  .kpis.hero,.kpis.four,.kpis.six,.mini.c4,.mini.c3,.mini.c6,.spot .grid{
+    grid-template-columns:1fr}
+}
+</style>
+
+<style>
+#gate{position:fixed;inset:0;z-index:200;display:grid;place-items:center;
+  background:radial-gradient(120% 90% at 50% 0%,#101725,#0A0D13 60%);padding:22px}
+#gate .box{width:100%;max-width:390px;text-align:center;animation:rise .5s cubic-bezier(.22,1,.36,1) both}
+#gate .mark{width:52px;height:52px;border-radius:14px;margin:0 auto 22px;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--prof),#0E7A5B);color:#04140E;font-weight:700;font-size:17px;
+  letter-spacing:-.04em;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 14px 40px -14px var(--prof)}
+#gate h1{font-size:21px;margin-bottom:8px}
+#gate p{font-size:13.5px;color:var(--ink-3);margin-bottom:26px;line-height:1.6}
+#gate form{display:flex;flex-direction:column;gap:11px}
+#gate input[type=password]{
+  width:100%;padding:14px 16px;border-radius:11px;background:var(--panel);
+  border:1px solid var(--line);color:var(--ink);font-size:15px;
+  font-family:"JetBrains Mono",monospace;text-align:center;letter-spacing:.02em;
+  transition:border-color .16s}
+#gate input[type=password]:focus{outline:none;border-color:var(--prof);
+  box-shadow:0 0 0 3px rgba(23,168,124,.14)}
+#gate button{padding:13px 16px;border-radius:11px;font-size:14.5px;font-weight:600;
+  background:var(--prof);color:#04140E;transition:filter .16s}
+#gate button:hover{filter:brightness(1.09)}
+#gate button:disabled{opacity:.6;cursor:default}
+#gate .rec{display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:12.5px;color:var(--ink-3);margin-top:3px}
+#gate .rec input{accent-color:var(--prof);width:14px;height:14px}
+#gate .err{font-size:13px;color:var(--loss-t);min-height:19px;margin-top:5px}
+#gate .pie{margin-top:30px;font-size:11.5px;color:var(--ink-3);line-height:1.7}
+#gate .pie b{color:var(--ink-2);font-weight:500}
+</style>
+<div id="gate"><div class="box">
+  <div class="mark">M&amp;C</div>
+  <h1>Panel de rentabilidad</h1>
+  <p>Los datos de esta página están cifrados.<br>Introduce la contraseña para verlos.</p>
+  <form id="gform" autocomplete="on">
+    <input type="password" id="gpass" placeholder="contraseña" autocomplete="current-password"
+           autocapitalize="off" autocorrect="off" spellcheck="false" required>
+    <button type="submit" id="gbtn">Entrar</button>
+    <label class="rec"><input type="checkbox" id="grec"> Recordar en este navegador</label>
+  </form>
+  <div class="err" id="gerr"></div>
+  <div class="pie">Se descifra <b>dentro de tu navegador</b>.<br>
+    La contraseña no se envía a ningún servidor.</div>
+</div></div>
+
+<script>
+(function(){
+  const PAQ = {"v": 1, "alg": "AES-256-GCM", "kdf": "PBKDF2-HMAC-SHA256", "iter": 600000, "salt": "JagAQet5lDMTkyI2eUDo2A==", "iv": "QkPO2HxgBgUVaS6s", "ct": "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"};
+  const g = document.getElementById('gate');
+  const form = document.getElementById('gform');
+  const inp = document.getElementById('gpass');
+  const btn = document.getElementById('gbtn');
+  const err = document.getElementById('gerr');
+  const rec = document.getElementById('grec');
+  const CLAVE = 'mc-dash-pass';
+
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+  async function abrir(pass){
+    if (!(window.crypto && crypto.subtle))
+      throw new Error('Este navegador no permite descifrar aquí (hace falta HTTPS).');
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass),
+                                             'PBKDF2', false, ['deriveKey']);
+    const k = await crypto.subtle.deriveKey(
+      {name:'PBKDF2', salt:b64(PAQ.salt), iterations:PAQ.iter, hash:'SHA-256'},
+      km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const claro = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(PAQ.iv)}, k, b64(PAQ.ct));
+    return JSON.parse(new TextDecoder().decode(claro));
+  }
+
+  async function entrar(pass, recordar){
+    btn.disabled = true; btn.textContent = 'Descifrando…'; err.textContent = '';
+    try {
+      const datos = await abrir(pass);
+      if (recordar) try { localStorage.setItem(CLAVE, pass); } catch(e){}
+      g.style.transition = 'opacity .3s'; g.style.opacity = 0;
+      setTimeout(() => g.remove(), 320);
+      arrancar(datos);
+    } catch(e){
+      try { localStorage.removeItem(CLAVE); } catch(_){}
+      err.textContent = e.message && e.message.includes('HTTPS')
+        ? e.message : 'Contraseña incorrecta.';
+      btn.disabled = false; btn.textContent = 'Entrar';
+      inp.value = ''; inp.focus();
+    }
+  }
+
+  form.addEventListener('submit', e => { e.preventDefault(); entrar(inp.value, rec.checked); });
+
+  let guardada = null;
+  try { guardada = localStorage.getItem(CLAVE); } catch(e){}
+  if (guardada){ rec.checked = true; entrar(guardada, true); } else { inp.focus(); }
+})();
+</script>
+
+</head>
+<body>
+<div class="app">
+  <aside id="side"></aside>
+  <main>
+    <div class="topbar" id="topbar"></div>
+    <div id="view"></div>
+  </main>
+</div>
+<div id="tip"></div>
+
+<script>
+let D = null;
+
+/* ══════════════════════════════════════════════ FORMATO (es-ES) */
+/* useGrouping:'always' para que 2500 salga como «2.500 €» y no «2500 €» */
+const nf  = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',
+              minimumFractionDigits:2, maximumFractionDigits:2, useGrouping:'always'});
+const nf0 = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',
+              maximumFractionDigits:0, useGrouping:'always'});
+/* los gráficos se dibujan en un viewBox fijo; en móvil hay que darles más
+   alto y menos líneas de rejilla o quedan aplastados */
+const COMPACTO = matchMedia('(max-width:760px)').matches;
+const MEDIO = matchMedia('(max-width:900px)').matches;
+const altoG = h => Math.round(h * (COMPACTO ? 1.75 : (MEDIO ? 1.25 : 1)));
+const nRejilla = () => COMPACTO ? 3 : 4;
+const nEtiq = () => COMPACTO ? 4 : 7;
+const RAYA = '—';
+const ok = v => typeof v === 'number' && isFinite(v);
+const eur  = v => ok(v) ? nf.format(v) : RAYA;
+const eur0 = v => ok(v) ? nf0.format(v) : RAYA;
+const eurS = v => ok(v) ? (v > 0 ? '+' : '') + nf0.format(v) : RAYA;
+const pct  = v => ok(v) ? new Intl.NumberFormat('es-ES',{minimumFractionDigits:1,
+               maximumFractionDigits:1}).format(v) + ' %' : RAYA;
+const mult = v => ok(v) ? new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,
+               maximumFractionDigits:2}).format(v) + 'x' : RAYA;
+const ent  = v => ok(v) ? new Intl.NumberFormat('es-ES').format(v) : RAYA;
+const fch  = s => { if(!s) return RAYA; const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; };
+const fchC = s => { if(!s) return ''; const [y,m,d]=s.split('-');
+  return `${d} ${['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][+m-1]}`; };
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const signo = v => !ok(v) ? '' : (v > 0 ? 'pos' : (v < 0 ? 'neg' : ''));
+
+/* ══════════════════════════════════════════════ TOOLTIP */
+const tip = document.getElementById('tip');
+function conTip(el, html){
+  el.addEventListener('pointerenter', e => { tip.innerHTML = html; tip.style.opacity = 1; mv(e); });
+  el.addEventListener('pointermove', mv);
+  el.addEventListener('pointerleave', () => tip.style.opacity = 0);
+  function mv(e){
+    const p = 15, w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = e.clientX + p, y = e.clientY + p;
+    if (x + w > innerWidth - 8)  x = e.clientX - w - p;
+    if (y + h > innerHeight - 8) y = e.clientY - h - p;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+}
+const filaTip = (k,v) => `<div class="r"><span>${k}</span><span>${v}</span></div>`;
+
+/* ══════════════════════════════════════════════ GRÁFICOS SVG */
+function ejeY(min, max, n = 4){
+  if (max === min){ max = min + 1; }
+  const paso = (max - min) / n;
+  return Array.from({length:n+1}, (_,i) => min + paso*i);
+}
+
+/** Serie temporal multi-línea con área opcional y crosshair. */
+function lineChart(el, serie, series, opts = {}){
+  if (!serie.length){ el.innerHTML = vacio(opts.vacio || 'Sin datos todavía'); return; }
+  const W=760, H=altoG(opts.h||230), L=58, R=16, T=14, B=COMPACTO?54:32;
+  const pw=W-L-R, ph=H-T-B;
+  let vals = [];
+  series.forEach(s => serie.forEach(p => vals.push(p[s.k])));
+  let max = Math.max(...vals, 0), min = Math.min(...vals, 0);
+  if (max === 0 && min === 0) max = 1;
+  const pad = (max-min)*0.08 || 1; max += pad; if (min < 0) min -= pad;
+  const n = serie.length;
+  const X = i => L + (n===1 ? pw/2 : i*pw/(n-1));
+  const Y = v => T + ph - ((v-min)/(max-min))*ph;
+
+  let g = '';
+  ejeY(min,max,nRejilla()).forEach(v => {
+    const y = Y(v);
+    g += `<line class="gridline" x1="${L}" y1="${y.toFixed(1)}" x2="${W-R}" y2="${y.toFixed(1)}"/>`
+       + `<text class="axis" x="${L-9}" y="${(y+3.4).toFixed(1)}" text-anchor="end">${eur0(v)}</text>`;
+  });
+  if (min < 0 && max > 0) g += `<line class="zeroline" x1="${L}" y1="${Y(0).toFixed(1)}" x2="${W-R}" y2="${Y(0).toFixed(1)}"/>`;
+
+  let paths = '';
+  series.forEach(s => {
+    const pts = serie.map((p,i) => `${i?'L':'M'}${X(i).toFixed(1)},${Y(p[s.k]).toFixed(1)}`).join(' ');
+    if (s.area && n > 1)
+      paths += `<path d="${pts} L${X(n-1).toFixed(1)},${Y(min<0?0:min).toFixed(1)} L${X(0).toFixed(1)},${Y(min<0?0:min).toFixed(1)} Z" fill="${s.c}" opacity=".11"/>`;
+    if (n === 1)
+      paths += `<circle cx="${X(0)}" cy="${Y(serie[0][s.k]).toFixed(1)}" r="5" fill="${s.c}"/>`;
+    else
+      paths += `<path d="${pts}" fill="none" stroke="${s.c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  });
+  // punto final destacado
+  series.forEach(s => { if (n>1)
+    paths += `<circle cx="${X(n-1).toFixed(1)}" cy="${Y(serie[n-1][s.k]).toFixed(1)}" r="4" fill="${s.c}" stroke="var(--panel)" stroke-width="2"/>`; });
+
+  // break-even
+  if (opts.breakeven){
+    const i = serie.findIndex(p => p.fecha === opts.breakeven);
+    if (i >= 0) paths += `<line x1="${X(i).toFixed(1)}" y1="${T}" x2="${X(i).toFixed(1)}" y2="${T+ph}" stroke="var(--prof)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".75"/>`
+      + `<text class="axis" x="${X(i).toFixed(1)}" y="${T-3}" text-anchor="middle" fill="var(--prof-t)">break-even</text>`;
+  }
+
+  const paso = Math.max(1, Math.ceil(n/nEtiq()));
+  let etiq = '';
+  serie.forEach((p,i) => { if (i % paso === 0 || i === n-1)
+    etiq += `<text class="axis" x="${X(i).toFixed(1)}" y="${H-(COMPACTO?16:11)}" text-anchor="middle">${fchC(p.fecha)}</text>`; });
+
+  let hits = '';
+  serie.forEach((p,i) => {
+    const w = pw/Math.max(n,1);
+    hits += `<rect class="hit" x="${(X(i)-w/2).toFixed(1)}" y="${T}" width="${w.toFixed(1)}" height="${ph}" fill="transparent"
+      data-t='${esc(JSON.stringify({f:p.fecha, v:series.map(s=>[s.n, p[s.k]])}))}'/>`;
+  });
+
+  el.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.alt||'gráfico')}">
+    ${g}${paths}${etiq}${hits}</svg>`;
+  el.querySelectorAll('.hit').forEach(h => {
+    const d = JSON.parse(h.dataset.t);
+    conTip(h, `<div class="t">${fch(d.f)}</div>` + d.v.map(([k,v]) => filaTip(k, eur(v))).join(''));
+  });
+}
+
+/** Barras verticales agrupadas por estructura. */
+function grouped(el, items, series, opts = {}){
+  if (!items.length){ el.innerHTML = vacio(opts.vacio); return; }
+  const W=760, H=altoG(opts.h||240), L=58, R=16, T=14, B=COMPACTO?64:42;
+  const pw=W-L-R, ph=H-T-B;
+  const max = Math.max(...items.flatMap(it => series.map(s => it[s.k])), 1) * 1.1;
+  const Y = v => T + ph - (v/max)*ph;
+  const bw = pw/items.length;
+  const inner = Math.min(52, bw*0.62), gap = 3;
+  const each = (inner - gap*(series.length-1))/series.length;
+
+  let g = '';
+  ejeY(0,max,nRejilla()).forEach(v => { const y=Y(v);
+    g += `<line class="gridline" x1="${L}" y1="${y.toFixed(1)}" x2="${W-R}" y2="${y.toFixed(1)}"/>`
+       + `<text class="axis" x="${L-9}" y="${(y+3.4).toFixed(1)}" text-anchor="end">${eur0(v)}</text>`; });
+
+  let bars='', lab='';
+  items.forEach((it,i) => {
+    const cx = L + bw*i + bw/2;
+    series.forEach((s,j) => {
+      const x = cx - inner/2 + j*(each+gap);
+      const y = Y(it[s.k]), h = Math.max(1, T+ph-y);
+      bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${each.toFixed(1)}" height="${h.toFixed(1)}"
+        rx="4" fill="${s.c}" data-t='${esc(JSON.stringify({t:it.label, k:s.n, v:it[s.k]}))}'/>`;
+    });
+    lab += `<text class="axis" x="${cx.toFixed(1)}" y="${H-(COMPACTO?22:24)}" text-anchor="middle">${esc(it.corto)}</text>`;
+  });
+  el.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}${bars}${lab}</svg>`;
+  el.querySelectorAll('rect[data-t]').forEach(r => {
+    const d = JSON.parse(r.dataset.t);
+    conTip(r, `<div class="t">${esc(d.t)}</div>` + filaTip(d.k, eur(d.v)));
+  });
+}
+
+/** Barras divergentes (profit por estructura). */
+function diverging(el, items, opts = {}){
+  if (!items.length){ el.innerHTML = vacio(opts.vacio); return; }
+  const W=760, H=altoG(opts.h||240), L=58, R=16, T=14, B=COMPACTO?64:42;
+  const pw=W-L-R, ph=H-T-B;
+  const vs = items.map(i=>i.v);
+  let max = Math.max(...vs, 0), min = Math.min(...vs, 0);
+  if (max===0 && min===0) max = 1;
+  const rango = (max-min) || 1;
+  max += rango*0.12; min -= rango*0.12;
+  const Y = v => T + ph - ((v-min)/(max-min))*ph;
+  const bw = pw/items.length, w = Math.min(64, bw*0.5);
+
+  let g='';
+  ejeY(min,max,nRejilla()).forEach(v => { const y=Y(v);
+    g += `<line class="gridline" x1="${L}" y1="${y.toFixed(1)}" x2="${W-R}" y2="${y.toFixed(1)}"/>`
+       + `<text class="axis" x="${L-9}" y="${(y+3.4).toFixed(1)}" text-anchor="end">${eur0(v)}</text>`; });
+  const y0 = Y(0);
+  g += `<line class="zeroline" x1="${L}" y1="${y0.toFixed(1)}" x2="${W-R}" y2="${y0.toFixed(1)}"/>`;
+
+  let bars='', lab='';
+  items.forEach((it,i) => {
+    const cx = L + bw*i + bw/2, y = Y(it.v);
+    const top = Math.min(y,y0), h = Math.max(2, Math.abs(y-y0));
+    const col = it.v >= 0 ? 'var(--prof)' : 'var(--loss)';
+    bars += `<rect x="${(cx-w/2).toFixed(1)}" y="${top.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"
+      rx="4" fill="${col}" data-t='${esc(JSON.stringify({t:it.label,v:it.v}))}'/>`;
+    bars += `<text class="axis" x="${cx.toFixed(1)}" y="${(it.v>=0?top-6:top+h+12).toFixed(1)}" text-anchor="middle"
+      fill="${it.v>=0?'var(--prof-t)':'var(--loss-t)'}" style="font-weight:600">${eurS(it.v)}</text>`;
+    lab += `<text class="axis" x="${cx.toFixed(1)}" y="${H-(COMPACTO?22:24)}" text-anchor="middle">${esc(it.corto)}</text>`;
+  });
+  el.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}${bars}${lab}</svg>`;
+  el.querySelectorAll('rect[data-t]').forEach(r => {
+    const d = JSON.parse(r.dataset.t);
+    conTip(r, `<div class="t">${esc(d.t)}</div>` + filaTip('Beneficio neto', eur(d.v)));
+  });
+}
+
+/** Barras horizontales con etiqueta y valor. */
+function barsH(items, opts = {}){
+  if (!items.length) return vacio(opts.vacio);
+  const max = Math.max(...items.map(i=>i.v), 1);
+  return items.map(it => `
+    <div class="hb">
+      <span class="l ${it.hot?'hot':''}" title="${esc(it.l)}">${esc(it.l)}</span>
+      <span class="track"><span class="fill" style="width:${(it.v/max*100).toFixed(2)}%;background:${it.c||'var(--spend)'}"></span></span>
+      <span class="v">${eur0(it.v)}${it.sub!==undefined?`<small>${it.sub}</small>`:''}</span>
+    </div>`).join('');
+}
+
+const vacio = (t) => `<div class="empty"><span class="big">${esc(t||'Sin datos todavía')}</span>
+  Aparecerá aquí en cuanto se registre en el Excel.</div>`;
+
+/* ══════════════════════════════════════════════ NAVEGACIÓN */
+function navHTML(actual){
+  const est = D.estructuras.map(e => {
+    const cl = e.estado === 'Activa' ? 'act' : (e.estado === 'Pausada' ? 'pau' : 'cer');
+    return `<button class="navlink ${actual===e.id?'on':''}" data-go="${esc(e.id)}">
+      <span class="dot ${cl}"></span>${esc(e.id)}</button>`;
+  }).join('');
+  return `
+    <div class="brand"><div class="mark">M&amp;C</div>
+      <div><b>Performance</b><span>Panel de rentabilidad</span></div></div>
+    <div class="navgroup">
+      <button class="navlink ${actual==='overview'?'on':''}" data-go="overview">
+        <span class="dot"></span>Overview</button>
+    </div>
+    <div class="navgroup"><div class="eyebrow">Estructuras</div>
+      ${est || `<div style="padding:8px 10px;font-size:12.5px;color:var(--ink-3)">Ninguna todavía</div>`}
+    </div>
+    <div class="sidefoot">Solo lectura.<br>Datos del Excel maestro.<br>
+      <span class="mono" style="font-size:10px">${esc(D.generado.replace('T',' '))}</span></div>`;
+}
+function topHTML(actual){
+  const tabs = [`<button class="tab ${actual==='overview'?'on':''}" data-go="overview">Overview</button>`]
+    .concat(D.estructuras.map(e =>
+      `<button class="tab ${actual===e.id?'on':''}" data-go="${esc(e.id)}">${esc(e.id)}</button>`));
+  return `<div class="row"><div class="brand"><div class="mark">M&amp;C</div>
+      <div><b>Performance</b><span>Panel de rentabilidad</span></div></div></div>
+    <div class="tabs">${tabs.join('')}</div>`;
+}
+
+/* ══════════════════════════════════════════════ OVERVIEW */
+function overview(){
+  const t = D.totales;
+  const act = D.estructuras.find(e => e.id === D.activaId);
+  const avisos = D.avisos.map(a => `<div class="alert ${a.tipo}">${esc(a.texto)}</div>`).join('');
+
+  const cmp = D.estructuras.map(e => ({
+    label: e.id, corto: e.id.split('-')[0],
+    inv: e.costeTotal, fac: e.facturacionNeta, v: e.beneficioNeto }));
+
+  const filas = D.estructuras.length ? D.estructuras.map(e => `
+    <tr data-go="${esc(e.id)}">
+      <td class="name">${esc(e.id)}</td>
+      <td><span class="pill ${e.estado.toLowerCase()}">${esc(e.estado)}</span></td>
+      <td class="n mono">${eur(e.costeTotal)}</td>
+      <td class="n mono">${eur(e.facturacionNeta)}</td>
+      <td class="n mono ${signo(e.beneficioNeto)==='pos'?'':''}" style="color:${e.beneficioNeto>=0?'var(--prof-t)':'var(--loss-t)'};font-weight:600">${eurS(e.beneficioNeto)}</td>
+      <td class="n mono">${pct(e.margen)}</td>
+      <td class="n mono">${pct(e.roi)}</td>
+    </tr>`).join('') : '';
+
+  // serie global acumulada
+  const dias = {};
+  D.estructuras.forEach(e => e.serie.forEach(p => {
+    const x = dias[p.fecha] || (dias[p.fecha] = {fecha:p.fecha, neta:0, gasto:0});
+    x.neta += p.neta; x.gasto += p.gasto;
+  }));
+  let an=0, ag=0;
+  const global = Object.values(dias).sort((a,b)=>a.fecha<b.fecha?-1:1)
+    .map(p => { an+=p.neta; ag+=p.gasto;
+      return {fecha:p.fecha, netaAcum:an, gastoAcum:ag, profitAcum:an-ag}; });
+
+  return `
+  <div class="pagehead anim">
+    <h1>Resultado acumulado</h1>
+    <div class="sub">Todas las estructuras juntas · ${ent(t.nEstructuras)} estructura(s),
+      ${ent(t.nActivas)} activa(s) · datos a ${fch(D.hoy)}</div>
+  </div>
+  ${avisos}
+
+  <div class="kpis hero anim">
+    <div class="card kpi big ${t.beneficioNeto<0?'neg':''}">
+      <span class="trendbar ${t.beneficioNeto>=0?'pos':'neg'}"></span>
+      <span class="lbl eyebrow">Profit acumulado</span>
+      <span class="v num ${t.beneficioNeto>=0?'pos':'neg'}">${eurS(t.beneficioNeto)}</span>
+      <span class="foot">Facturación neta menos todos los gastos</span>
+    </div>
+    <div class="card kpi"><span class="trendbar rev"></span>
+      <span class="lbl eyebrow">Facturación neta</span>
+      <span class="v num rev">${eur0(t.facturacionNeta)}</span>
+      <span class="foot">Bruta ${eur0(t.facturacionBruta)}</span></div>
+    <div class="card kpi"><span class="trendbar spend"></span>
+      <span class="lbl eyebrow">Total invertido</span>
+      <span class="v num spend">${eur0(t.gastoTotal)}</span>
+      <span class="foot">${eur0(t.gastosDirectos)} estructuras · ${eur0(t.gastosGenerales)} generales</span></div>
+    <div class="card kpi"><span class="trendbar ${t.beneficioNeto>=0?'pos':'neg'}"></span>
+      <span class="lbl eyebrow">ROI global</span>
+      <span class="v num ${t.beneficioNeto>=0?'pos':'neg'}">${pct(t.roi)}</span>
+      <span class="foot">Margen neto ${pct(t.margen)}</span></div>
+  </div>
+
+  <div class="mini c6 anim">
+    <div><span class="lbl eyebrow">Saldo en cuenta</span><div class="v num">${eur0(D.config.saldo)}</div></div>
+    <div><span class="lbl eyebrow">Adelantado M</span><div class="v num" style="color:var(--m)">${eur0(t.adelantoM)}</div></div>
+    <div><span class="lbl eyebrow">Adelantado C</span><div class="v num" style="color:var(--c)">${eur0(t.adelantoC)}</div></div>
+    <div><span class="lbl eyebrow">Corresponde a M</span><div class="v num">${eur0(t.importeFinalM)}</div></div>
+    <div><span class="lbl eyebrow">Corresponde a C</span><div class="v num">${eur0(t.importeFinalC)}</div></div>
+    <div><span class="lbl eyebrow">Multiplicador</span><div class="v num">${mult(t.multiplicador)}</div></div>
+  </div>
+
+  ${act ? bloqueActiva(act) : ''}
+
+  <section class="anim">
+    <div class="sechead"><h2>Todas las estructuras</h2>
+      <span class="note">Pulsa una fila para abrirla</span></div>
+    <div class="tablewrap">${filas ? `<div class="scroller"><table>
+      <thead><tr><th>Estructura</th><th>Estado</th><th class="n">Invertido</th>
+        <th class="n">Facturado neto</th><th class="n">Profit</th><th class="n">Margen</th>
+        <th class="n">ROI</th></tr></thead><tbody>${filas}</tbody></table></div>`
+      : vacio('Todavía no hay estructuras')}</div>
+  </section>
+
+  <section class="anim">
+    <div class="sechead"><h2>Comparación entre estructuras</h2></div>
+    <div class="grid2">
+      <div class="chartcard"><h3>Inversión vs facturación</h3>
+        <p class="cap">Cuánto ha costado cada estructura y cuánto ha devuelto.</p>
+        <div id="c-invfac"></div>
+        <div class="legend"><span><i style="background:var(--spend)"></i>Invertido</span>
+          <span><i style="background:var(--rev)"></i>Facturación neta</span></div></div>
+      <div class="chartcard"><h3>Beneficio por estructura</h3>
+        <p class="cap">Verde en beneficio, rojo en pérdida.</p>
+        <div id="c-profit"></div></div>
+    </div>
+  </section>
+
+  <section class="anim">
+    <div class="sechead"><h2>Evolución del negocio</h2>
+      <span class="note">Acumulado de todas las estructuras</span></div>
+    <div class="chartcard"><div id="c-evol"></div>
+      <div class="legend"><span><i style="background:var(--rev)"></i>Facturación neta acumulada</span>
+        <span><i style="background:var(--spend)"></i>Inversión acumulada</span>
+        <span><i style="background:var(--prof)"></i>Beneficio acumulado</span></div></div>
+  </section>
+
+  <section class="anim">
+    <div class="sechead"><h2>En qué se ha gastado</h2>
+      <span class="note">Gastos directos de estructura, todas juntas</span></div>
+    <div class="chartcard">${barsH(D.categoriasGlobal.map(c => ({
+        l:c.nombre, v:c.importe, sub:pct(c.pct),
+        hot:c.nombre==='Publicidad',
+        c:c.nombre==='Publicidad'?'var(--spend-t)':'var(--spend)'
+      })), {vacio:'Todavía no hay gastos registrados'})}</div>
+  </section>
+  <script type="application/json" id="datosGraficos">${JSON.stringify({cmp, global})}<\/script>`;
+}
+
+function bloqueActiva(e){
+  const neg = e.beneficioNeto < 0;
+  return `
+  <section class="anim">
+    <div class="sechead"><h2>Estructura actual</h2></div>
+    <div class="spot ${neg?'neg':''}">
+      <div class="top">
+        <h3>${esc(e.id)} <span class="pill ${e.estado.toLowerCase()}">${esc(e.estado)}</span></h3>
+        <div class="meta">
+          <span>Inicio <b>${fch(e.inicio)}</b></span>
+          <span>Fin <b>${e.fin?fch(e.fin):RAYA}</b></span>
+          <span><b>${ent(e.dias)}</b> día(s) activa</span>
+          <span><b>${ent(e.nMovimientos)}</b> movimiento(s)</span>
+        </div>
+      </div>
+      <div class="grid">
+        <div><span class="lbl eyebrow">Invertido</span><div class="v num" style="color:var(--spend-t)">${eur0(e.costeTotal)}</div></div>
+        <div><span class="lbl eyebrow">Fact. bruta</span><div class="v num">${eur0(e.facturacionBruta)}</div></div>
+        <div><span class="lbl eyebrow">Fact. neta</span><div class="v num" style="color:var(--rev-t)">${eur0(e.facturacionNeta)}</div></div>
+        <div><span class="lbl eyebrow">Profit neto</span><div class="v num" style="color:${neg?'var(--loss-t)':'var(--prof-t)'}">${eurS(e.beneficioNeto)}</div></div>
+        <div><span class="lbl eyebrow">Margen</span><div class="v num">${pct(e.margen)}</div></div>
+        <div><span class="lbl eyebrow">ROI</span><div class="v num" style="color:${neg?'var(--loss-t)':'var(--prof-t)'}">${pct(e.roi)}</div></div>
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+        <div><span class="lbl eyebrow">Publicidad</span><div class="v num">${eur0(e.publicidad)}</div></div>
+        <div><span class="lbl eyebrow">Otros gastos</span><div class="v num">${eur0(e.otrosGastos)}</div></div>
+        <div><span class="lbl eyebrow">Generales del periodo</span><div class="v num">${eur0(e.gastosGeneralesAsignados)}</div></div>
+      </div>
+      <div class="cta"><button class="linkbtn" data-go="${esc(e.id)}">Ver la estructura completa →</button></div>
+    </div>
+  </section>`;
+}
+
+/* ══════════════════════════════════════════════ PÁGINA DE ESTRUCTURA */
+function paginaEst(id){
+  const e = D.estructuras.find(x => x.id === id);
+  if (!e) return `<div class="pagehead"><h1>No encontrada</h1></div>`;
+  const neg = e.beneficioNeto < 0;
+  const orig = [
+    {l:'M', v:e.adelantoM, c:'var(--m)', sub:'adelanto personal'},
+    {l:'C', v:e.adelantoC, c:'var(--c)', sub:'adelanto personal'},
+    {l:'Cuenta común', v:e.pagadoComun, c:'var(--k)', sub:'dinero del negocio'},
+  ].filter(x => x.v > 0);
+
+  return `
+  <div class="pagehead anim">
+    <h1>${esc(e.id)} <span class="pill ${e.estado.toLowerCase()}">${esc(e.estado)}</span></h1>
+    <div class="sub">Inicio ${fch(e.inicio)} · Fin ${e.fin?fch(e.fin):RAYA} ·
+      ${ent(e.dias)} día(s) · ${ent(e.nMovimientos)} gasto(s) · ${ent(e.nIngresos)} registro(s) de facturación</div>
+  </div>
+
+  <div class="kpis hero anim">
+    <div class="card kpi big ${neg?'neg':''}"><span class="trendbar ${neg?'neg':'pos'}"></span>
+      <span class="lbl eyebrow">Profit neto</span>
+      <span class="v num ${neg?'neg':'pos'}">${eurS(e.beneficioNeto)}</span>
+      <span class="foot">Beneficio directo ${eurS(e.beneficioDirecto)} (sin gastos generales)</span></div>
+    <div class="card kpi"><span class="trendbar rev"></span>
+      <span class="lbl eyebrow">Facturación neta</span>
+      <span class="v num rev">${eur0(e.facturacionNeta)}</span>
+      <span class="foot">Bruta ${eur0(e.facturacionBruta)}</span></div>
+    <div class="card kpi"><span class="trendbar spend"></span>
+      <span class="lbl eyebrow">Total invertido</span>
+      <span class="v num spend">${eur0(e.costeTotal)}</span>
+      <span class="foot">${eur0(e.gastosDirectos)} directos · ${eur0(e.gastosGeneralesAsignados)} generales</span></div>
+    <div class="card kpi"><span class="trendbar ${neg?'neg':'pos'}"></span>
+      <span class="lbl eyebrow">ROI</span>
+      <span class="v num ${neg?'neg':'pos'}">${pct(e.roi)}</span>
+      <span class="foot">Margen ${pct(e.margen)}</span></div>
+  </div>
+
+  <div class="mini c6 anim">
+    <div><span class="lbl eyebrow">Reembolsos</span><div class="v num">${eur0(e.reembolsos)}</div></div>
+    <div><span class="lbl eyebrow">Contracargos</span><div class="v num">${eur0(e.contracargos)}</div></div>
+    <div><span class="lbl eyebrow">Coste por € facturado</span><div class="v num">${ok(e.costePorEuro)?mult(e.costePorEuro).replace('x',''):RAYA}</div></div>
+    <div><span class="lbl eyebrow">Multiplicador</span><div class="v num">${mult(e.multiplicador)}</div></div>
+    <div><span class="lbl eyebrow">Facturación / día</span><div class="v num">${eur0(e.facturacionMediaDiaria)}</div></div>
+    <div><span class="lbl eyebrow">Profit / día</span><div class="v num" style="color:${neg?'var(--loss-t)':'var(--prof-t)'}">${eurS(e.profitMedioDiario)}</div></div>
+  </div>
+
+  <section class="anim">
+    <div class="grid2">
+      <div class="chartcard"><h3>Desglose de la inversión</h3>
+        <p class="cap">Gastos directos por categoría. ${ok(e.pctPublicidad)&&e.pctPublicidad>0?`Publicidad: ${pct(e.pctPublicidad)} del total.`:''}</p>
+        ${barsH(e.categorias.map(c => ({l:c.nombre, v:c.importe, sub:pct(c.pct),
+            hot:c.nombre==='Publicidad',
+            c:c.nombre==='Publicidad'?'var(--spend-t)':'var(--spend)'})),
+          {vacio:'Todavía no hay gastos'})}
+      </div>
+      <div class="chartcard"><h3>Origen del dinero</h3>
+        <p class="cap">Quién puso cada euro. Lo pagado por la cuenta común <b>no</b> es adelanto de nadie.</p>
+        ${barsH(orig.map(o => ({l:o.l, v:o.v, c:o.c, sub:o.sub})),
+          {vacio:'Todavía no hay pagos'})}
+        <div class="legend"><span style="color:var(--ink-3);font-size:11.5px">
+          Adelanto personal ${eur0(e.adelantoM + e.adelantoC)} · Cuenta común ${eur0(e.pagadoComun)}</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="anim">
+    <div class="grid2">
+      <div class="chartcard"><h3>Facturación diaria</h3>
+        <p class="cap">Bruta y neta día a día.</p><div id="c-fact"></div>
+        <div class="legend"><span><i style="background:var(--rev)"></i>Neta</span>
+          <span><i style="background:var(--alt)"></i>Bruta</span></div></div>
+      <div class="chartcard"><h3>Inversión acumulada</h3>
+        <p class="cap">Capital que ha ido necesitando la estructura.</p><div id="c-gasto"></div>
+        <div class="legend"><span><i style="background:var(--spend)"></i>Gasto acumulado</span>
+          <span><i style="background:var(--alt)"></i>Publicidad del día</span></div></div>
+    </div>
+  </section>
+
+  <section class="anim">
+    <div class="sechead"><h2>Beneficio acumulado</h2>
+      <span class="note">${e.breakeven?`Break-even alcanzado el ${fch(e.breakeven)}`:'Todavía sin break-even'}</span></div>
+    <div class="chartcard"><div id="c-acum"></div>
+      <div class="legend"><span><i style="background:var(--prof)"></i>Beneficio acumulado</span>
+        <span><i style="background:var(--rev)"></i>Facturación neta acumulada</span>
+        <span><i style="background:var(--spend)"></i>Inversión acumulada</span></div></div>
+  </section>
+  <script type="application/json" id="datosGraficos">${JSON.stringify({serie:e.serie, be:e.breakeven})}<\/script>`;
+}
+
+/* ══════════════════════════════════════════════ ROUTER */
+let actual = 'overview';
+function pintar(){
+  document.getElementById('side').innerHTML = navHTML(actual);
+  document.getElementById('topbar').innerHTML = topHTML(actual);
+  const v = document.getElementById('view');
+  v.innerHTML = actual === 'overview' ? overview() : paginaEst(actual);
+
+  const raw = document.getElementById('datosGraficos');
+  const dg = raw ? JSON.parse(raw.textContent) : {};
+
+  if (actual === 'overview'){
+    grouped(document.getElementById('c-invfac'), dg.cmp,
+      [{k:'inv',n:'Invertido',c:'var(--spend)'},{k:'fac',n:'Facturación neta',c:'var(--rev)'}],
+      {vacio:'Todavía no hay estructuras'});
+    diverging(document.getElementById('c-profit'), dg.cmp, {vacio:'Todavía no hay estructuras'});
+    lineChart(document.getElementById('c-evol'), dg.global,
+      [{k:'netaAcum',n:'Facturación neta',c:'var(--rev)'},
+       {k:'gastoAcum',n:'Inversión',c:'var(--spend)'},
+       {k:'profitAcum',n:'Beneficio',c:'var(--prof)',area:true}],
+      {h:250, vacio:'Todavía no hay movimientos', alt:'evolución acumulada del negocio'});
+  } else {
+    const s = dg.serie || [];
+    const hayFact = s.some(p => p.bruta || p.neta);
+    lineChart(document.getElementById('c-fact'), hayFact ? s : [],
+      [{k:'neta',n:'Neta',c:'var(--rev)',area:true},{k:'bruta',n:'Bruta',c:'var(--alt)'}],
+      {vacio:'Todavía no hay facturación registrada', alt:'facturación diaria'});
+    lineChart(document.getElementById('c-gasto'), s,
+      [{k:'gastoAcum',n:'Gasto acumulado',c:'var(--spend)',area:true},
+       {k:'publicidad',n:'Publicidad del día',c:'var(--alt)'}],
+      {vacio:'Todavía no hay gastos', alt:'inversión acumulada'});
+    lineChart(document.getElementById('c-acum'), s,
+      [{k:'profitAcum',n:'Beneficio acumulado',c:'var(--prof)',area:true},
+       {k:'netaAcum',n:'Facturación neta',c:'var(--rev)'},
+       {k:'gastoAcum',n:'Inversión',c:'var(--spend)'}],
+      {h:260, breakeven:dg.be, vacio:'Todavía no hay movimientos', alt:'beneficio acumulado'});
+  }
+  scrollTo({top:0, behavior:'instant'});
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-go]');
+  if (!b) return;
+  actual = b.dataset.go;
+  location.hash = actual === 'overview' ? '' : encodeURIComponent(actual);
+  pintar();
+});
+addEventListener('hashchange', () => {
+  const h = decodeURIComponent(location.hash.slice(1)) || 'overview';
+  if (h !== actual){ actual = h; pintar(); }
+});
+function arrancar(datos){
+  D = datos;
+  const h0 = decodeURIComponent(location.hash.slice(1));
+  if (h0 && D.estructuras.some(e => e.id === h0)) actual = h0;
+  pintar();
+}
+
+</script>
+
+</body>
+</html>
