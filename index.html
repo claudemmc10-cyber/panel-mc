@@ -25,6 +25,10 @@
   --rev-t:#5CBFF0; --spend-t:#E4A73F; --prof-t:#3FD9A4; --loss-t:#FF7075;
   --loss:#C8484D;
   --m:#4C8FE8;    --c:#17A99A;      --k:#8B6BE8;
+  /* rampa dorada del objetivo: una sola tinta, clara -> oscura.
+     -gold-d y -gold son marca; -gold-t es solo texto (10,7:1 sobre panel) */
+  --gold-d:#A8801C; --gold:#D2A62E; --gold-t:#E8C55A;
+  --gold-track:rgba(210,166,46,.11);   /* paso claro de la MISMA rampa */
 
   --r:14px; --r-sm:10px;
   --sh:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
@@ -100,7 +104,6 @@ main{flex:1;min-width:0;padding:34px 40px 90px;max-width:1320px}
 .kpis{display:grid;gap:14px;margin-bottom:14px}
 .kpis.hero{grid-template-columns:1.55fr 1fr 1fr 1fr}
 .kpis.four{grid-template-columns:repeat(4,1fr)}
-.kpis.six{grid-template-columns:repeat(6,1fr)}
 .card{
   background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);
   padding:19px 21px;box-shadow:var(--sh);position:relative;overflow:hidden;
@@ -123,15 +126,6 @@ main{flex:1;min-width:0;padding:34px 40px 90px;max-width:1320px}
 .trendbar.pos{background:var(--prof)} .trendbar.neg{background:var(--loss)}
 .trendbar.rev{background:var(--rev)} .trendbar.spend{background:var(--spend)}
 .trendbar.neutral{background:var(--line)}
-
-/* fila compacta de métricas secundarias */
-.mini{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);
-  border-radius:var(--r);overflow:hidden;margin-bottom:14px}
-.mini.c4{grid-template-columns:repeat(4,1fr)} .mini.c3{grid-template-columns:repeat(3,1fr)}
-.mini.c6{grid-template-columns:repeat(6,1fr)}
-.mini > div{background:var(--panel);padding:15px 17px}
-.mini .lbl{display:block;margin-bottom:7px}
-.mini .v{font-size:19px;font-weight:600;letter-spacing:-.025em}
 
 /* ═══════════════════════════════════════════════════ SECCIONES */
 section{margin-top:34px}
@@ -182,54 +176,11 @@ td.name{font-weight:600;letter-spacing:-.01em}
 .empty{padding:44px 22px;text-align:center;color:var(--ink-3);font-size:13.5px}
 .empty .big{display:block;font-size:15px;color:var(--ink-2);margin-bottom:6px;font-weight:500}
 
-/* ═══════════════════════════════════════════════════ GRÁFICOS */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.chartcard{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);
-  padding:20px 22px 16px;box-shadow:var(--sh)}
-.chartcard h3{font-size:14.5px;margin-bottom:3px}
-.chartcard .cap{font-size:12.5px;color:var(--ink-3);margin-bottom:18px}
-svg.chart{display:block;width:100%;height:auto;overflow:visible}
-.gridline{stroke:var(--line-soft);stroke-width:1}
-/* el tamaño va en unidades del viewBox: al encoger el SVG hay que subirlo
-   o las etiquetas se vuelven ilegibles en pantallas pequeñas */
-.axis{font-family:"JetBrains Mono",monospace;font-size:10px;fill:var(--ink-3)}
-@media (max-width:1180px){ .axis{font-size:13px} }
-@media (max-width:900px){ .axis{font-size:17px} }
-@media (max-width:760px){ .axis{font-size:23px} }
-.zeroline{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
-
-/* barras horizontales */
-.hb{display:grid;grid-template-columns:minmax(96px,auto) 1fr minmax(74px,auto);
-  gap:13px;align-items:center;margin-bottom:11px}
-.hb .l{font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis}
-.hb .l.hot{color:var(--ink);font-weight:600}
-.hb .track{display:block;height:9px;border-radius:5px;background:var(--sunk);overflow:hidden}
-.hb .fill{display:block;height:9px;border-radius:5px;min-width:3px;
-  transition:width .5s cubic-bezier(.22,1,.36,1)}
-.hb .v{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
-  text-align:right;white-space:nowrap}
-.hb .v small{display:block;font-weight:400;color:var(--ink-3);font-size:10px;margin-top:1px}
-
-.legend{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:16px}
-.legend i{width:11px;height:11px;border-radius:3px;display:inline-block;vertical-align:-1px;
-  margin-right:7px}
-.legend span{font-size:12px;color:var(--ink-2)}
-
 /* ═══════════════════════════════════════════════════ AVISOS */
 .alert{display:flex;gap:12px;padding:13px 16px;border-radius:var(--r-sm);font-size:13px;
   margin-bottom:12px;border:1px solid}
 .alert.info{background:rgba(46,155,214,.08);border-color:rgba(46,155,214,.3);color:var(--ink-2)}
 .alert.error{background:rgba(200,72,77,.1);border-color:rgba(200,72,77,.4);color:#FFB9BB}
-
-/* ═══════════════════════════════════════════════════ TOOLTIP */
-#tip{position:fixed;z-index:99;pointer-events:none;opacity:0;transition:opacity .11s;
-  background:#050810;border:1px solid var(--line);border-radius:9px;padding:9px 12px;
-  font-size:12px;line-height:1.65;box-shadow:0 12px 32px -8px rgba(0,0,0,.9);max-width:250px}
-#tip .t{font-weight:600;margin-bottom:4px;font-size:12px}
-#tip .r{display:flex;justify-content:space-between;gap:16px;
-  font-family:"JetBrains Mono",monospace;font-size:11px}
-#tip .r span:first-child{color:var(--ink-3)}
 
 /* ═══════════════════════════════════════════════════ ANIMACIÓN */
 @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
@@ -238,16 +189,117 @@ svg.chart{display:block;width:100%;height:auto;overflow:visible}
   *{animation:none!important;transition:none!important}
 }
 
+/* ═══════════════════════════════════════════════════ OBJETIVO (meter) */
+.goal{
+  margin-top:0;margin-bottom:26px;border-radius:var(--r);position:relative;overflow:hidden;
+  border:1px solid rgba(210,166,46,.26);
+  background:
+    radial-gradient(90% 150% at 100% 0%, rgba(210,166,46,.10), transparent 60%),
+    linear-gradient(160deg,#151417,#101319 46%),var(--panel);
+  padding:22px 26px 20px;box-shadow:var(--sh);
+}
+.goal::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,197,90,.5),transparent)}
+.goal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  flex-wrap:wrap;margin-bottom:18px}
+.goal-head h2{font-size:14px;letter-spacing:.1em;text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--gold-t)}
+.goal-title{display:flex;align-items:center;gap:11px;min-width:0}
+.goal-title .dia{width:9px;height:9px;flex:0 0 9px;transform:rotate(45deg);border-radius:2px;
+  background:linear-gradient(140deg,var(--gold-t),var(--gold-d));
+  box-shadow:0 0 0 3px rgba(210,166,46,.14)}
+.goal-target{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;
+  letter-spacing:.06em;color:var(--ink-2);border:1px solid rgba(210,166,46,.3);
+  background:rgba(210,166,46,.07);padding:5px 12px;border-radius:100px;white-space:nowrap}
+.goal-figs{display:grid;grid-template-columns:repeat(3,auto);gap:14px 46px;
+  justify-content:start;margin-bottom:19px}
+.goal-figs > div{display:flex;flex-direction:column;justify-content:flex-end}
+.goal-figs .lbl{display:block;margin-bottom:6px}
+/* cifras proporcionales: son numeros grandes sueltos, no una columna */
+.goal-figs .f{font-size:30px;font-weight:600;letter-spacing:-.035em;line-height:1.05}
+.goal-figs .f.gold{color:var(--gold-t)}
+.goal-figs .f.pos{color:var(--prof-t)} .goal-figs .f.neg{color:var(--loss-t)}
+.goal-track{height:16px;border-radius:9px;background:var(--gold-track);overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(210,166,46,.16)}
+.goal-fill{display:block;height:100%;border-radius:0 9px 9px 0;
+  background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  box-shadow:0 0 18px -4px rgba(210,166,46,.65);
+  transition:width .7s cubic-bezier(.22,1,.36,1)}
+.goal-foot{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  margin-top:10px;font-size:11.5px;color:var(--ink-3);flex-wrap:wrap}
+.goal-foot .mono{font-size:10.5px}
+.goal-foot .msg{color:var(--ink-2);text-align:center;flex:1 1 auto}
+
+/* ═══════════════════════════════════════════════════ BLOQUE ANCHO */
+.panelbig{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);
+  box-shadow:var(--sh);overflow:hidden}
+.panelbig .cap{font-size:12.5px;color:var(--ink-3);padding:19px 28px 0;max-width:78ch}
+
+/* desglose de la inversion */
+.brk{padding:20px 28px 10px}
+.brk-row{display:grid;grid-template-columns:minmax(155px,1.15fr) 3fr minmax(104px,auto) minmax(62px,auto);
+  gap:22px;align-items:center;padding:15px 0}
+.brk-row + .brk-row{border-top:1px solid var(--line-soft)}
+.brk-name{font-size:15px;font-weight:500;color:var(--ink);display:flex;align-items:center;
+  gap:9px;min-width:0}
+.brk-name span.t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{font-family:"JetBrains Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:3px 7px;border-radius:5px;flex:0 0 auto;
+  color:var(--ink-3);border:1px solid var(--line);background:var(--sunk)}
+.tag.gen{color:var(--rev-t);border-color:rgba(46,155,214,.32);background:rgba(46,155,214,.09)}
+.tag.res{color:var(--loss-t);border-color:rgba(200,72,77,.4);background:rgba(200,72,77,.1)}
+.brk-track{height:16px;border-radius:7px;background:var(--sunk);overflow:hidden}
+.brk-fill{display:block;height:100%;border-radius:0 7px 7px 0;min-width:4px;
+  transition:width .55s cubic-bezier(.22,1,.36,1)}
+.brk-amt{font-family:"JetBrains Mono",monospace;font-size:16px;font-weight:600;
+  text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.brk-pct{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);
+  text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.brk-total{display:grid;
+  grid-template-columns:minmax(155px,1.15fr) 3fr minmax(104px,auto) minmax(62px,auto);
+  gap:22px;align-items:center;padding:19px 28px;background:var(--sunk);
+  border-top:1px solid var(--line)}
+.brk-total .k{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.brk-total .v{grid-column:3;font-family:"JetBrains Mono",monospace;font-size:20px;
+  font-weight:600;text-align:right;color:var(--spend-t);font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.brk-total .q{grid-column:4;text-align:right;font-size:11px;color:var(--prof-t);white-space:nowrap}
+
+/* origen del dinero */
+.orig{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-soft);
+  border-bottom:1px solid var(--line-soft)}
+.orig-tile{background:var(--panel);padding:24px 28px 26px}
+.orig-tile .lbl{display:block;margin-bottom:9px}
+.orig-tile .f{font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1.05;
+  margin-bottom:13px}
+.orig-tile .f.z{color:var(--ink-3)}
+.orig-bar{height:14px;border-radius:6px;background:var(--sunk);overflow:hidden}
+.orig-bar span{display:block;height:100%;border-radius:0 6px 6px 0;
+  transition:width .55s cubic-bezier(.22,1,.36,1)}
+.orig-share{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;
+  font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.orig-sub{margin-top:5px;font-size:12px;color:var(--ink-3);line-height:1.45}
+.orig-sub b{color:var(--ink-2);font-weight:600}
+.recon{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-soft)}
+.recon > div{background:var(--sunk);padding:16px 28px}
+.recon .lbl{display:block;margin-bottom:6px}
+.recon b{font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:600;
+  font-variant-numeric:tabular-nums}
+.recon .ok b{color:var(--prof-t)}
+.recon .warn b{color:var(--loss-t)}
+
 /* ═══════════════════════════════════════════════════ RESPONSIVE */
 @media (max-width:1180px){
   .kpis.hero{grid-template-columns:1fr 1fr}
-  .kpis.six{grid-template-columns:repeat(3,1fr)}
   .spot .grid{grid-template-columns:repeat(3,1fr)}
-  .mini.c6{grid-template-columns:repeat(3,1fr)}
 }
 @media (max-width:900px){
-  .grid2{grid-template-columns:1fr}
   main{padding:26px 24px 80px}
+  .goal-figs{gap:14px 30px}
+  .goal-figs .f{font-size:26px}
+  .orig{grid-template-columns:1fr}
+  .recon{grid-template-columns:1fr 1fr}
 }
 @media (max-width:760px){
   aside{display:none}
@@ -269,18 +321,45 @@ svg.chart{display:block;width:100%;height:auto;overflow:visible}
   .pagehead h1{font-size:22px}
   .kpis.hero,.kpis.four{grid-template-columns:1fr 1fr}
   .kpis.hero > .kpi.big{grid-column:1/-1}
-  .kpis.six{grid-template-columns:1fr 1fr}
-  .mini.c4,.mini.c3,.mini.c6{grid-template-columns:1fr 1fr}
   .spot .grid{grid-template-columns:1fr 1fr}
   .card{padding:16px 17px}
   .kpi .v{font-size:25px}
-  .mini .v,.spot .grid .v{font-size:17px}
-  .chartcard{padding:17px 16px 13px}
-  .hb{grid-template-columns:minmax(74px,auto) 1fr minmax(64px,auto);gap:10px}
+  .spot .grid .v{font-size:17px}
+
+  /* objetivo: las tres cifras en columna, sin encoger la barra */
+  .goal{padding:19px 17px 17px;margin-bottom:20px}
+  .goal-head{margin-bottom:15px}
+  .goal-head h2{font-size:12px}
+  .goal-figs{grid-template-columns:1fr 1fr;gap:13px 18px;margin-bottom:16px}
+  .goal-figs > div:first-child{grid-column:1/-1}
+  .goal-figs .f{font-size:23px}
+  .goal-figs > div:first-child .f{font-size:28px}
+  .goal-track{height:14px}
+  /* en movil los extremos sobran: el objetivo ya esta en la pildora de arriba */
+  .goal-foot{font-size:11.5px;justify-content:flex-start}
+  .goal-foot .mono{display:none}
+  .goal-foot .msg{text-align:left}
+
+  /* desglose: nombre arriba, barra y cifras debajo */
+  .brk{padding:14px 17px 6px}
+  .brk-row{grid-template-columns:1fr auto;gap:9px 12px;padding:15px 0}
+  .brk-name{grid-column:1;grid-row:1;font-size:13.5px}
+  .brk-pct{grid-column:2;grid-row:1;font-size:12px}
+  .brk-track{grid-column:1;grid-row:2;height:13px}
+  .brk-amt{grid-column:2;grid-row:2;font-size:14px}
+  .brk-total{grid-template-columns:1fr auto;gap:6px 12px;padding:14px 17px}
+  .brk-total .k{grid-column:1;grid-row:1}
+  .brk-total .v{grid-column:2;grid-row:1;font-size:16.5px}
+  .brk-total .q{grid-column:1/-1;grid-row:2;text-align:left}
+
+  .orig-tile{padding:19px 17px 21px}
+  .orig-tile .f{font-size:26px}
+  .recon > div{padding:13px 17px}
+  .panelbig .cap{padding:14px 17px 0}
 }
 @media (max-width:400px){
-  .kpis.hero,.kpis.four,.kpis.six,.mini.c4,.mini.c3,.mini.c6,.spot .grid{
-    grid-template-columns:1fr}
+  .kpis.hero,.kpis.four{grid-template-columns:1fr}
+  .goal-figs > div:first-child .f{font-size:26px}
 }
 </style>
 
@@ -329,7 +408,7 @@ svg.chart{display:block;width:100%;height:auto;overflow:visible}
 
 <script>
 (function(){
-  const PAQ = {"v": 1, "alg": "AES-256-GCM", "kdf": "PBKDF2-HMAC-SHA256", "iter": 600000, "salt": "RHYlUQ2T0mauzv6HzPKqVA==", "iv": "twzV34Iq6rNQ6FzW", "ct": "771V10lzMTmsi5qrEnH4CkEFOnxUl1uFSV+YTLMkrsGVBU5Iso5HlQqJPJjsP7bV0QnwqvVahjCn2+NghCPOtNalpFxkTqsVrZPmFe6NcGEt5yMdSqiR/wV8955dSiMnUAmjgpdbENkg4zbcrfkPGqlog2RygQGF9NCmrI5nNTXd3+G8IfsBbJpmmi82tARX2ahqgHteW9ZRuHGF/it5jz1KXXwHUgpEKVCVJSF0yQ7B0NMBTtwFz1StJAuT4+bvwZStQlWENYMtuqhGd6omP5n8B3R0jkUB5nB2mQEnoQMfn3yE4EqZYvrzu8m9ZiIB8FkWqL6i2uIIFQadcwT/+2ky2vyQ4eprvIhboacoGTv9LaAk6SVDoMwN0sGBJpCFFyNHr3KFlespPv5TkyvXxMzDZsNNHSSnpH119jRVYzXL8wFHnjdfzdVkXKMHqUH9PYAWfJIV17huykR+/VLLI2KkHOsOemG+LaNr7Mj+4g3n8Rh30hOCvk4kpjeA07+BURlQFRdDDooRDGlPRQIZmUH4lUHEzj73OBnLqTwLn8VBIgcppFtzHKqOp06bChdatF33o/+CvFAxiIwUDpjJwlkTU0PHkW0KHw4/MiYl71a5KxWlLcjk1QTTnlt8Shk9N7pZs9uIiLZEMFrhGunscgpQWE6B+2TB4aG8kT/fXcBzeLeewY4HXZ/rZO82hq0osomEXl2vPBz/uI09N8yQSYPiXTDk8h4Q4Fv1vT6qD8Hd51SRXeG0DN0J6eQsllVaTGghdydk3ROaZbe2ey8olbUhssKkEtIT+NCs8+k5UZYiYSEKZzUjz8xkRI5rYDlW5AZjItJ1RszF/Cyv7nDLJkQmAtpjh+/0WHGC4WGaWHHAOnep2Rl/mLISUSQw6vUw78Zwgd45DEUYMxYRDXqXwPCZFajjchxAPkSipVId1Aaz71KgttjMuav33Wo68x1UzPEi+596rs8pWxDRKvN4Wh7QHXEV5wWO96hpl7EwluK7Ww6f86TvupnTGR/2/88BXoDgMmEsNeVC+5CtE2GcpdTeCuRgnQF9+0IT/DxQ0BZBwZPgqvEWp2tKLmuTF1e7cf02CYd1Sm9sLiGhKbyP5k5brpQKlDiczHItFREJLDdZdxXoS7BeS4BL3naMbsN2B3PRh7x9WC5LMBsKSsgF8/DVbgC8uD8VwNGv2Mu0U0kufmGlOiv70jZMdtf4O3yHnStVKsm0NtIH05jilic/OKhVF8d3+hVJGwKPUojRFFJHm72ZFJIEfAWO++SFjX6nfBhwXx0x5F4c3mLQ584GF01lYZWThJwajQ/X62v4KlOV7isN42ryEmaDCHQkDvy91b3zpBeunAlCXqYesoSXaEYmYN/9E1xxUuByY5y31popO+rp3oZAoo6k9MxXyI6H8oKTNruO5MfLOdIqp8e8qJEjPHBN8TDA1b/Lfhv5Bi5BuGEcGX6mYqd78n/mKDeGovOuk+cpchcHrAtSkd6QDvI9RwiwWI0O8LSlBPQvKBA4zfD1d7+lhIo2pcZubWXL2MPWSFtVUp90LRMGQFmRTWC0/qwT08oi1q8q/BTz5Dbqfmy2odEQRr+vPyYCaBxNjEKT7eYYc16dUlhJh0+rFxFEay+XXCrQF094DD3yOvkF+YcMCL809A49Gm84Ft/OrnjlnbvploVWKr+ZIeqXYRhvHJHzr6qutZJoM2AdUhvPH2+qyX55gMZ8yjtPC9imN6H2cNIUTF2B3+UQHuX4SOqQS4HJ/TdLa2pn1GyrBRUB7kJFHqeMEngMuHhg3rdEnt2LLytIe0fxMVJ+R5aJ7hmhT1WUnZJ0K+4oCw+LR06rel36Ktp1sGX5mPeGfXco+hHPAa/LwUEqasU9DsNDOHMrsU7YIOeKJxPXj3pOKRd1bsutTcYjLaaELa9lXrwulZ6L1xPmYqweGedoPf4/T/jp1/fNbZEh83xpyHUyL8rmwsVEkwdR9CqgfjMEjtsic8i6Wa4fZcoq3MGkbKDyrnaTed7j/ShE7xGZdUbECi7m1aVjMLaj1zjt4eFgxu7Lc4ZrnWQVcCsulhMWETPwh72buWmCeCVYG8xXtTFsf/OVYES+0RpIyeQPdF5bd05sHzAeDTqjaF9Eo3fN8AlYY3Wse9vAIN0h4QWXwnX5g4jwb9A92W0YalxpUwHslUwdQf0lFKYNl80v+/rM8xQ53+Di8/2GVORJ6GoZCv6U4+XNLAI4KdGO4gHBsGzB6I6HUklUaWFWEkFqf3NwcCUftgr+Uvt0VkilnSc5MOvvm2p1dYwrjAMM+27bW73lXPHh6p2Qvo8SNzFJjIaqSlylWISQx7JBPO0hoX1Y/k84ficTo/TegUzEDd0If+TgE6ks80vSGndlPB6KuoCCVUMdCMzt4keAJUOMoVYqF+cOKLIvopd/CNoJDkG/IOU+48x2T6O+k6lT7Zuhk/hAVe/u64IawbLdYq4a4qUAYnGea5Tk74Dzi3VaSvY6Af2C06+DYD62EnGo9sQM/KZy4HZxmuplH0prCtw8/p6MYOLpH9io/RkmcYzHkq+vrehXx+AwJGRtd7l+WmwzOW2OGydxUsSEaA/jEoq7O7ntVVtc2NlFI4351MpjKUNxTQ0nlEKN/zik/apK/UR5fvorsXvWD7nDPUfbBbQ6TAijBjlJnWbhGaDMzhSlaEfYZM6qqcUDO4amRywjJ7IJ7i7RkhajarPx5z/zasXxlOjLL81zmdXfXb8KsY/sy/SbU0J5dv4pft7vqpzVHfA0EGajQ/GZn2Zhoq1RyswEHlSkdINUHsggyFVXoQLqhOo0ckNwncWt9ir9fAFi5WeamkZF4N+0Vdf0qloZSonyj/8ZANswgiAkUxRmToeww1mqp5MvOH+cZi5FefpejRe+gduvvCvqFSMrFbl8PXzemHZBSZxQtuY4ePlm3iMikOpFOTwGTt7llfFRSX6EgnjDQEmwezYO2Ih4pAwOpVsQxlTpFVGP7javGylSf83m5k+li6LDqtykA+EZnzFx3Tmk/oW37ZLiC3FNpDfSobst01sliy+pSwPQerdaKXAnCJIeRwsl3jtRXWAUiAGi58LflyFRXxOgwQW8zLcon3wdlzRizcpB+yjj2MVu2Bci7iyc4YcHVl9M5Z6l1sZNW7JzsTmBlEYOfJG0HQnf9jeHvinB9HuOJktLjjuNkWqdqNMHsM0CrIS5TThCNgiDOjXrloJew72fyWGnE54FjfIQMFJq6x5fpLAoUBxMpj2fyAD13q7VIx0Nm96Ya4l2pvhBcM6wzws2ZuQ0t58u7kK+041hNtTGyHgM9fFo3DIRtDCTRNgsnPIpLiOfBRFmLaHIXnyorZ5zZdBLxydkawg/htCn1az9Pw7Cr9iaVIb/7gDSunDh8AQzcr5Y2z9/QlfZ2qECY9E/tsm9I+xu1JEViS0Gxs2iXhfZzYsW2HyKlWrAIs9ln6ZoqbUbQDHxJ0A4mDH4Chr1nMdU7Fagm/sgmjwe1B8lru4T4wOxY9ltuBO2t5RoEtaBVgvvXTXqLKHG1KoQGoaYbQTcOHQPb539DOxt89gXZzN/BfHx6lCBjiUrXYlbQZ/waIylFRTzhqrORqqguOWx4dKumZnrt4U9iaPz788K19tQ7BlOuzvmkyGjllZoqw7gdPoM/ja+POWJScnqXsLpaRWvY9td4zuzmsU="};
+  const PAQ = {"v": 1, "alg": "AES-256-GCM", "kdf": "PBKDF2-HMAC-SHA256", "iter": 600000, "salt": "tGCUD+mnb+ySbTGyce1pWA==", "iv": "7GO7tOR/vqVxu48m", "ct": "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"};
   const g = document.getElementById('gate');
   const form = document.getElementById('gform');
   const inp = document.getElementById('gpass');
@@ -386,7 +465,6 @@ svg.chart{display:block;width:100%;height:auto;overflow:visible}
     <div id="view"></div>
   </main>
 </div>
-<div id="tip"></div>
 
 <script>
 let D = null;
@@ -397,13 +475,6 @@ const nf  = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',
               minimumFractionDigits:2, maximumFractionDigits:2, useGrouping:'always'});
 const nf0 = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',
               maximumFractionDigits:0, useGrouping:'always'});
-/* los gráficos se dibujan en un viewBox fijo; en móvil hay que darles más
-   alto y menos líneas de rejilla o quedan aplastados */
-const COMPACTO = matchMedia('(max-width:760px)').matches;
-const MEDIO = matchMedia('(max-width:900px)').matches;
-const altoG = h => Math.round(h * (COMPACTO ? 1.75 : (MEDIO ? 1.25 : 1)));
-const nRejilla = () => COMPACTO ? 3 : 4;
-const nEtiq = () => COMPACTO ? 4 : 7;
 const RAYA = '—';
 const ok = v => typeof v === 'number' && isFinite(v);
 const eur  = v => ok(v) ? nf.format(v) : RAYA;
@@ -411,187 +482,142 @@ const eur0 = v => ok(v) ? nf0.format(v) : RAYA;
 const eurS = v => ok(v) ? (v > 0 ? '+' : '') + nf0.format(v) : RAYA;
 const pct  = v => ok(v) ? new Intl.NumberFormat('es-ES',{minimumFractionDigits:1,
                maximumFractionDigits:1}).format(v) + ' %' : RAYA;
-const mult = v => ok(v) ? new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,
-               maximumFractionDigits:2}).format(v) + 'x' : RAYA;
 const ent  = v => ok(v) ? new Intl.NumberFormat('es-ES').format(v) : RAYA;
 const fch  = s => { if(!s) return RAYA; const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; };
-const fchC = s => { if(!s) return ''; const [y,m,d]=s.split('-');
-  return `${d} ${['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][+m-1]}`; };
 const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const signo = v => !ok(v) ? '' : (v > 0 ? 'pos' : (v < 0 ? 'neg' : ''));
-
-/* ══════════════════════════════════════════════ TOOLTIP */
-const tip = document.getElementById('tip');
-function conTip(el, html){
-  el.addEventListener('pointerenter', e => { tip.innerHTML = html; tip.style.opacity = 1; mv(e); });
-  el.addEventListener('pointermove', mv);
-  el.addEventListener('pointerleave', () => tip.style.opacity = 0);
-  function mv(e){
-    const p = 15, w = tip.offsetWidth, h = tip.offsetHeight;
-    let x = e.clientX + p, y = e.clientY + p;
-    if (x + w > innerWidth - 8)  x = e.clientX - w - p;
-    if (y + h > innerHeight - 8) y = e.clientY - h - p;
-    tip.style.left = x + 'px'; tip.style.top = y + 'px';
-  }
-}
-const filaTip = (k,v) => `<div class="r"><span>${k}</span><span>${v}</span></div>`;
-
-/* ══════════════════════════════════════════════ GRÁFICOS SVG */
-function ejeY(min, max, n = 4){
-  if (max === min){ max = min + 1; }
-  const paso = (max - min) / n;
-  return Array.from({length:n+1}, (_,i) => min + paso*i);
-}
-
-/** Serie temporal multi-línea con área opcional y crosshair. */
-function lineChart(el, serie, series, opts = {}){
-  if (!serie.length){ el.innerHTML = vacio(opts.vacio || 'Sin datos todavía'); return; }
-  const W=760, H=altoG(opts.h||230), L=58, R=16, T=14, B=COMPACTO?54:32;
-  const pw=W-L-R, ph=H-T-B;
-  let vals = [];
-  series.forEach(s => serie.forEach(p => vals.push(p[s.k])));
-  let max = Math.max(...vals, 0), min = Math.min(...vals, 0);
-  if (max === 0 && min === 0) max = 1;
-  const pad = (max-min)*0.08 || 1; max += pad; if (min < 0) min -= pad;
-  const n = serie.length;
-  const X = i => L + (n===1 ? pw/2 : i*pw/(n-1));
-  const Y = v => T + ph - ((v-min)/(max-min))*ph;
-
-  let g = '';
-  ejeY(min,max,nRejilla()).forEach(v => {
-    const y = Y(v);
-    g += `<line class="gridline" x1="${L}" y1="${y.toFixed(1)}" x2="${W-R}" y2="${y.toFixed(1)}"/>`
-       + `<text class="axis" x="${L-9}" y="${(y+3.4).toFixed(1)}" text-anchor="end">${eur0(v)}</text>`;
-  });
-  if (min < 0 && max > 0) g += `<line class="zeroline" x1="${L}" y1="${Y(0).toFixed(1)}" x2="${W-R}" y2="${Y(0).toFixed(1)}"/>`;
-
-  let paths = '';
-  series.forEach(s => {
-    const pts = serie.map((p,i) => `${i?'L':'M'}${X(i).toFixed(1)},${Y(p[s.k]).toFixed(1)}`).join(' ');
-    if (s.area && n > 1)
-      paths += `<path d="${pts} L${X(n-1).toFixed(1)},${Y(min<0?0:min).toFixed(1)} L${X(0).toFixed(1)},${Y(min<0?0:min).toFixed(1)} Z" fill="${s.c}" opacity=".11"/>`;
-    if (n === 1)
-      paths += `<circle cx="${X(0)}" cy="${Y(serie[0][s.k]).toFixed(1)}" r="5" fill="${s.c}"/>`;
-    else
-      paths += `<path d="${pts}" fill="none" stroke="${s.c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
-  });
-  // punto final destacado
-  series.forEach(s => { if (n>1)
-    paths += `<circle cx="${X(n-1).toFixed(1)}" cy="${Y(serie[n-1][s.k]).toFixed(1)}" r="4" fill="${s.c}" stroke="var(--panel)" stroke-width="2"/>`; });
-
-  // break-even
-  if (opts.breakeven){
-    const i = serie.findIndex(p => p.fecha === opts.breakeven);
-    if (i >= 0) paths += `<line x1="${X(i).toFixed(1)}" y1="${T}" x2="${X(i).toFixed(1)}" y2="${T+ph}" stroke="var(--prof)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".75"/>`
-      + `<text class="axis" x="${X(i).toFixed(1)}" y="${T-3}" text-anchor="middle" fill="var(--prof-t)">break-even</text>`;
-  }
-
-  const paso = Math.max(1, Math.ceil(n/nEtiq()));
-  let etiq = '';
-  serie.forEach((p,i) => { if (i % paso === 0 || i === n-1)
-    etiq += `<text class="axis" x="${X(i).toFixed(1)}" y="${H-(COMPACTO?16:11)}" text-anchor="middle">${fchC(p.fecha)}</text>`; });
-
-  let hits = '';
-  serie.forEach((p,i) => {
-    const w = pw/Math.max(n,1);
-    hits += `<rect class="hit" x="${(X(i)-w/2).toFixed(1)}" y="${T}" width="${w.toFixed(1)}" height="${ph}" fill="transparent"
-      data-t='${esc(JSON.stringify({f:p.fecha, v:series.map(s=>[s.n, p[s.k]])}))}'/>`;
-  });
-
-  el.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.alt||'gráfico')}">
-    ${g}${paths}${etiq}${hits}</svg>`;
-  el.querySelectorAll('.hit').forEach(h => {
-    const d = JSON.parse(h.dataset.t);
-    conTip(h, `<div class="t">${fch(d.f)}</div>` + d.v.map(([k,v]) => filaTip(k, eur(v))).join(''));
-  });
-}
-
-/** Barras verticales agrupadas por estructura. */
-function grouped(el, items, series, opts = {}){
-  if (!items.length){ el.innerHTML = vacio(opts.vacio); return; }
-  const W=760, H=altoG(opts.h||240), L=58, R=16, T=14, B=COMPACTO?64:42;
-  const pw=W-L-R, ph=H-T-B;
-  const max = Math.max(...items.flatMap(it => series.map(s => it[s.k])), 1) * 1.1;
-  const Y = v => T + ph - (v/max)*ph;
-  const bw = pw/items.length;
-  const inner = Math.min(52, bw*0.62), gap = 3;
-  const each = (inner - gap*(series.length-1))/series.length;
-
-  let g = '';
-  ejeY(0,max,nRejilla()).forEach(v => { const y=Y(v);
-    g += `<line class="gridline" x1="${L}" y1="${y.toFixed(1)}" x2="${W-R}" y2="${y.toFixed(1)}"/>`
-       + `<text class="axis" x="${L-9}" y="${(y+3.4).toFixed(1)}" text-anchor="end">${eur0(v)}</text>`; });
-
-  let bars='', lab='';
-  items.forEach((it,i) => {
-    const cx = L + bw*i + bw/2;
-    series.forEach((s,j) => {
-      const x = cx - inner/2 + j*(each+gap);
-      const y = Y(it[s.k]), h = Math.max(1, T+ph-y);
-      bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${each.toFixed(1)}" height="${h.toFixed(1)}"
-        rx="4" fill="${s.c}" data-t='${esc(JSON.stringify({t:it.label, k:s.n, v:it[s.k]}))}'/>`;
-    });
-    lab += `<text class="axis" x="${cx.toFixed(1)}" y="${H-(COMPACTO?22:24)}" text-anchor="middle">${esc(it.corto)}</text>`;
-  });
-  el.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}${bars}${lab}</svg>`;
-  el.querySelectorAll('rect[data-t]').forEach(r => {
-    const d = JSON.parse(r.dataset.t);
-    conTip(r, `<div class="t">${esc(d.t)}</div>` + filaTip(d.k, eur(d.v)));
-  });
-}
-
-/** Barras divergentes (profit por estructura). */
-function diverging(el, items, opts = {}){
-  if (!items.length){ el.innerHTML = vacio(opts.vacio); return; }
-  const W=760, H=altoG(opts.h||240), L=58, R=16, T=14, B=COMPACTO?64:42;
-  const pw=W-L-R, ph=H-T-B;
-  const vs = items.map(i=>i.v);
-  let max = Math.max(...vs, 0), min = Math.min(...vs, 0);
-  if (max===0 && min===0) max = 1;
-  const rango = (max-min) || 1;
-  max += rango*0.12; min -= rango*0.12;
-  const Y = v => T + ph - ((v-min)/(max-min))*ph;
-  const bw = pw/items.length, w = Math.min(64, bw*0.5);
-
-  let g='';
-  ejeY(min,max,nRejilla()).forEach(v => { const y=Y(v);
-    g += `<line class="gridline" x1="${L}" y1="${y.toFixed(1)}" x2="${W-R}" y2="${y.toFixed(1)}"/>`
-       + `<text class="axis" x="${L-9}" y="${(y+3.4).toFixed(1)}" text-anchor="end">${eur0(v)}</text>`; });
-  const y0 = Y(0);
-  g += `<line class="zeroline" x1="${L}" y1="${y0.toFixed(1)}" x2="${W-R}" y2="${y0.toFixed(1)}"/>`;
-
-  let bars='', lab='';
-  items.forEach((it,i) => {
-    const cx = L + bw*i + bw/2, y = Y(it.v);
-    const top = Math.min(y,y0), h = Math.max(2, Math.abs(y-y0));
-    const col = it.v >= 0 ? 'var(--prof)' : 'var(--loss)';
-    bars += `<rect x="${(cx-w/2).toFixed(1)}" y="${top.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"
-      rx="4" fill="${col}" data-t='${esc(JSON.stringify({t:it.label,v:it.v}))}'/>`;
-    bars += `<text class="axis" x="${cx.toFixed(1)}" y="${(it.v>=0?top-6:top+h+12).toFixed(1)}" text-anchor="middle"
-      fill="${it.v>=0?'var(--prof-t)':'var(--loss-t)'}" style="font-weight:600">${eurS(it.v)}</text>`;
-    lab += `<text class="axis" x="${cx.toFixed(1)}" y="${H-(COMPACTO?22:24)}" text-anchor="middle">${esc(it.corto)}</text>`;
-  });
-  el.innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}${bars}${lab}</svg>`;
-  el.querySelectorAll('rect[data-t]').forEach(r => {
-    const d = JSON.parse(r.dataset.t);
-    conTip(r, `<div class="t">${esc(d.t)}</div>` + filaTip('Beneficio neto', eur(d.v)));
-  });
-}
-
-/** Barras horizontales con etiqueta y valor. */
-function barsH(items, opts = {}){
-  if (!items.length) return vacio(opts.vacio);
-  const max = Math.max(...items.map(i=>i.v), 1);
-  return items.map(it => `
-    <div class="hb">
-      <span class="l ${it.hot?'hot':''}" title="${esc(it.l)}">${esc(it.l)}</span>
-      <span class="track"><span class="fill" style="width:${(it.v/max*100).toFixed(2)}%;background:${it.c||'var(--spend)'}"></span></span>
-      <span class="v">${eur0(it.v)}${it.sub!==undefined?`<small>${it.sub}</small>`:''}</span>
-    </div>`).join('');
-}
 
 const vacio = (t) => `<div class="empty"><span class="big">${esc(t||'Sin datos todavía')}</span>
   Aparecerá aquí en cuanto se registre en el Excel.</div>`;
+
+/* ══════════════════════════════════════════════ OBJETIVOS
+   Meter de una sola tinta (rampa dorada) sobre pista del mismo tono.
+   Reglas: la barra nunca es negativa ni pasa del 100 %, y lo que falta
+   nunca supera al objetivo aunque haya perdidas. */
+const OBJ_GLOBAL = 1000000;
+const OBJ_ESTRUCTURA = 50000;
+
+const pctMeta = v => v <= 0 ? '0 %'
+  : v < 0.1 ? '< 0,1 %'
+  : new Intl.NumberFormat('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})
+      .format(v) + ' %';
+
+function metaHTML(titulo, valor, objetivo, etiqueta){
+  const p        = ok(valor) ? valor : 0;
+  const logrado  = Math.max(0, p);                    // una perdida no resta camino
+  const pv       = objetivo > 0 ? logrado / objetivo * 100 : 0;
+  const ancho    = Math.min(100, pv);                 // tope visual en 100 %
+  const falta    = Math.max(0, objetivo - logrado);   // nunca mas que el objetivo
+  const superado = p >= objetivo;
+
+  const msg = p < 0
+      ? 'En pérdidas: el contador arranca cuando el beneficio pase de 0 €.'
+    : p === 0
+      ? 'Todavía sin beneficio acumulado.'
+    : superado
+      ? `Objetivo superado en ${eur0(p - objetivo)}.`
+      : `Queda el ${pctMeta(100 - pv)} del camino.`;
+
+  return `
+  <section class="goal anim">
+    <div class="goal-head">
+      <div class="goal-title"><span class="dia"></span><h2>${esc(titulo)}</h2></div>
+      <span class="goal-target">Objetivo · ${nf0.format(objetivo)}</span>
+    </div>
+    <div class="goal-figs">
+      <div><span class="lbl eyebrow">${esc(etiqueta)}</span>
+        <div class="f num ${p<0?'neg':(p>0?'pos':'')}">${eurS(p)}</div></div>
+      <div><span class="lbl eyebrow">Conseguido</span>
+        <div class="f gold">${pctMeta(pv)}</div></div>
+      <div><span class="lbl eyebrow">${superado?'Excedente':'Falta para el objetivo'}</span>
+        <div class="f">${superado?eur0(p-objetivo):eur0(falta)}</div></div>
+    </div>
+    <div class="goal-track">
+      <span class="goal-fill" style="width:${ancho.toFixed(4)}%"></span></div>
+    <div class="goal-foot">
+      <span class="mono">0 €</span>
+      <span class="msg">${esc(msg)}</span>
+      <span class="mono">${nf0.format(objetivo)}</span>
+    </div>
+  </section>`;
+}
+
+/* ══════════════════════════════════════════════ DESGLOSE DE LA INVERSIÓN
+   Una fila por partida real. Los generales imputados salen con su propio
+   nombre y etiqueta: asi la suma cuadra SIEMPRE con el total invertido. */
+function colorPartida(x){
+  if (x.tipo === 'residual') return 'var(--loss)';
+  if (x.tipo === 'general')  return 'var(--rev)';
+  return x.nombre === 'Publicidad' ? 'var(--spend-t)' : 'var(--spend)';
+}
+function desgloseHTML(items, total, nota){
+  if (!items.length) return `<div class="panelbig">${vacio('Todavía no hay gastos')}</div>`;
+  const max = Math.max(...items.map(i => Math.abs(i.importe)), 1);
+  const suma = items.reduce((a,b) => a + b.importe, 0);
+  const cuadra = Math.abs(suma - total) < 0.005;
+  const filas = items.map(x => `
+    <div class="brk-row">
+      <div class="brk-name"><span class="t" title="${esc(x.nombre)}">${esc(x.nombre)}</span>${
+        x.tipo === 'general'  ? '<span class="tag gen">general</span>' :
+        x.tipo === 'residual' ? '<span class="tag res">sin clasificar</span>' : ''}</div>
+      <span class="brk-track"><span class="brk-fill" style="width:${
+        (Math.max(0,x.importe)/max*100).toFixed(2)}%;background:${colorPartida(x)}"></span></span>
+      <div class="brk-amt">${eur(x.importe)}</div>
+      <div class="brk-pct">${pct(x.pct)}</div>
+    </div>`).join('');
+  return `
+  <div class="panelbig">
+    ${nota ? `<p class="cap">${nota}</p>` : ''}
+    <div class="brk">${filas}</div>
+    <div class="brk-total">
+      <div class="k">Total invertido</div>
+      <div class="v num">${eur(total)}</div>
+      <div class="q">${cuadra ? '✓ el desglose cuadra'
+        : `⚠ diferencia de ${eur(suma - total)}`}</div>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════ ORIGEN DEL DINERO */
+function origenHTML(o, total){
+  const tiles = [
+    {l:'Cuenta común', v:o.pagadoComun, c:'var(--k)',
+     s:'Dinero del negocio. <b>No es adelanto</b> de nadie.'},
+    {l:'M', v:o.adelantoM, c:'var(--m)',
+     s:'Puesto por M de su bolsillo: <b>adelanto personal</b>.'},
+    {l:'C', v:o.adelantoC, c:'var(--c)',
+     s:'Puesto por C de su bolsillo: <b>adelanto personal</b>.'},
+  ];
+  if (Math.abs(o.pagadoOtros || 0) >= 0.01)
+    tiles.push({l:'Sin pagador', v:o.pagadoOtros, c:'var(--loss)',
+                s:'Movimientos sin «Pagado por» en el Excel.'});
+  const max = Math.max(...tiles.map(t => Math.abs(t.v)), 1);
+  const suma = tiles.reduce((a,b) => a + b.v, 0);
+  const cuadra = Math.abs(suma - total) < 0.005;
+  const adel = (o.adelantoM || 0) + (o.adelantoC || 0);
+
+  return `
+  <div class="panelbig">
+    <div class="orig">${tiles.map(t => `
+      <div class="orig-tile">
+        <span class="lbl eyebrow">${esc(t.l)}</span>
+        <div class="f num ${t.v?'':'z'}" style="${t.v?`color:${t.c}`:''}">${eur(t.v)}</div>
+        <div class="orig-bar"><span style="width:${
+          (Math.max(0,t.v)/max*100).toFixed(2)}%;background:${t.c}"></span></div>
+        <div class="orig-share">${total?pct(t.v/total*100):RAYA} de la inversión</div>
+        <div class="orig-sub">${t.s}</div>
+      </div>`).join('')}</div>
+    <div class="recon">
+      <div><span class="lbl eyebrow">Adelanto personal M</span><b style="color:${
+        o.adelantoM?'var(--m)':'var(--ink-3)'}">${eur(o.adelantoM)}</b></div>
+      <div><span class="lbl eyebrow">Adelanto personal C</span><b style="color:${
+        o.adelantoC?'var(--c)':'var(--ink-3)'}">${eur(o.adelantoC)}</b></div>
+      <div><span class="lbl eyebrow">Adelantos en total</span><b style="color:${
+        adel?'var(--ink)':'var(--ink-3)'}">${eur(adel)}</b></div>
+      <div class="${cuadra?'ok':'warn'}"><span class="lbl eyebrow">Suma de los orígenes</span>
+        <b>${eur(suma)} ${cuadra?'✓':'⚠'}</b></div>
+    </div>
+  </div>`;
+}
 
 /* ══════════════════════════════════════════════ NAVEGACIÓN */
 function navHTML(actual){
@@ -628,39 +654,27 @@ function overview(){
   const act = D.estructuras.find(e => e.id === D.activaId);
   const avisos = D.avisos.map(a => `<div class="alert ${a.tipo}">${esc(a.texto)}</div>`).join('');
 
-  const cmp = D.estructuras.map(e => ({
-    label: e.id, corto: e.id.split('-')[0],
-    inv: e.costeTotal, fac: e.facturacionNeta, v: e.beneficioNeto }));
-
   const filas = D.estructuras.length ? D.estructuras.map(e => `
     <tr data-go="${esc(e.id)}">
       <td class="name">${esc(e.id)}</td>
       <td><span class="pill ${e.estado.toLowerCase()}">${esc(e.estado)}</span></td>
       <td class="n mono">${eur(e.costeTotal)}</td>
       <td class="n mono">${eur(e.facturacionNeta)}</td>
-      <td class="n mono ${signo(e.beneficioNeto)==='pos'?'':''}" style="color:${e.beneficioNeto>=0?'var(--prof-t)':'var(--loss-t)'};font-weight:600">${eurS(e.beneficioNeto)}</td>
+      <td class="n mono" style="color:${e.beneficioNeto>=0?'var(--prof-t)':'var(--loss-t)'};font-weight:600">${eurS(e.beneficioNeto)}</td>
       <td class="n mono">${pct(e.margen)}</td>
       <td class="n mono">${pct(e.roi)}</td>
     </tr>`).join('') : '';
 
-  // serie global acumulada
-  const dias = {};
-  D.estructuras.forEach(e => e.serie.forEach(p => {
-    const x = dias[p.fecha] || (dias[p.fecha] = {fecha:p.fecha, neta:0, gasto:0});
-    x.neta += p.neta; x.gasto += p.gasto;
-  }));
-  let an=0, ag=0;
-  const global = Object.values(dias).sort((a,b)=>a.fecha<b.fecha?-1:1)
-    .map(p => { an+=p.neta; ag+=p.gasto;
-      return {fecha:p.fecha, netaAcum:an, gastoAcum:ag, profitAcum:an-ag}; });
-
   return `
+  ${avisos}
+  ${metaHTML('Camino al millón de beneficio', t.beneficioNeto, OBJ_GLOBAL,
+             'Beneficio acumulado')}
+
   <div class="pagehead anim">
     <h1>Resultado acumulado</h1>
     <div class="sub">Todas las estructuras juntas · ${ent(t.nEstructuras)} estructura(s),
       ${ent(t.nActivas)} activa(s) · datos a ${fch(D.hoy)}</div>
   </div>
-  ${avisos}
 
   <div class="kpis hero anim">
     <div class="card kpi big ${t.beneficioNeto<0?'neg':''}">
@@ -683,15 +697,6 @@ function overview(){
       <span class="foot">Margen neto ${pct(t.margen)}</span></div>
   </div>
 
-  <div class="mini c6 anim">
-    <div><span class="lbl eyebrow">Saldo en cuenta</span><div class="v num">${eur0(D.config.saldo)}</div></div>
-    <div><span class="lbl eyebrow">Adelantado M</span><div class="v num" style="color:var(--m)">${eur0(t.adelantoM)}</div></div>
-    <div><span class="lbl eyebrow">Adelantado C</span><div class="v num" style="color:var(--c)">${eur0(t.adelantoC)}</div></div>
-    <div><span class="lbl eyebrow">Corresponde a M</span><div class="v num">${eur0(t.importeFinalM)}</div></div>
-    <div><span class="lbl eyebrow">Corresponde a C</span><div class="v num">${eur0(t.importeFinalC)}</div></div>
-    <div><span class="lbl eyebrow">Multiplicador</span><div class="v num">${mult(t.multiplicador)}</div></div>
-  </div>
-
   ${act ? bloqueActiva(act) : ''}
 
   <section class="anim">
@@ -705,38 +710,12 @@ function overview(){
   </section>
 
   <section class="anim">
-    <div class="sechead"><h2>Comparación entre estructuras</h2></div>
-    <div class="grid2">
-      <div class="chartcard"><h3>Inversión vs facturación</h3>
-        <p class="cap">Cuánto ha costado cada estructura y cuánto ha devuelto.</p>
-        <div id="c-invfac"></div>
-        <div class="legend"><span><i style="background:var(--spend)"></i>Invertido</span>
-          <span><i style="background:var(--rev)"></i>Facturación neta</span></div></div>
-      <div class="chartcard"><h3>Beneficio por estructura</h3>
-        <p class="cap">Verde en beneficio, rojo en pérdida.</p>
-        <div id="c-profit"></div></div>
-    </div>
-  </section>
-
-  <section class="anim">
-    <div class="sechead"><h2>Evolución del negocio</h2>
-      <span class="note">Acumulado de todas las estructuras</span></div>
-    <div class="chartcard"><div id="c-evol"></div>
-      <div class="legend"><span><i style="background:var(--rev)"></i>Facturación neta acumulada</span>
-        <span><i style="background:var(--spend)"></i>Inversión acumulada</span>
-        <span><i style="background:var(--prof)"></i>Beneficio acumulado</span></div></div>
-  </section>
-
-  <section class="anim">
     <div class="sechead"><h2>En qué se ha gastado</h2>
-      <span class="note">Gastos directos de estructura, todas juntas</span></div>
-    <div class="chartcard">${barsH(D.categoriasGlobal.map(c => ({
-        l:c.nombre, v:c.importe, sub:pct(c.pct),
-        hot:c.nombre==='Publicidad',
-        c:c.nombre==='Publicidad'?'var(--spend-t)':'var(--spend)'
-      })), {vacio:'Todavía no hay gastos registrados'})}</div>
-  </section>
-  <script type="application/json" id="datosGraficos">${JSON.stringify({cmp, global})}<\/script>`;
+      <span class="note">Todas las estructuras juntas</span></div>
+    ${desgloseHTML(D.desgloseGlobal, t.gastoTotal,
+      'Cada euro gastado, por partida. Los gastos generales aparecen con su propio '
+      + 'nombre y etiqueta, de forma que la suma cuadra con el total invertido.')}
+  </section>`;
 }
 
 function bloqueActiva(e){
@@ -773,22 +752,22 @@ function bloqueActiva(e){
 }
 
 /* ══════════════════════════════════════════════ PÁGINA DE ESTRUCTURA */
+/* Misma plantilla para 001, 002, 003... nada esta escrito a medida. */
 function paginaEst(id){
   const e = D.estructuras.find(x => x.id === id);
   if (!e) return `<div class="pagehead"><h1>No encontrada</h1></div>`;
   const neg = e.beneficioNeto < 0;
-  const orig = [
-    {l:'M', v:e.adelantoM, c:'var(--m)', sub:'adelanto personal'},
-    {l:'C', v:e.adelantoC, c:'var(--c)', sub:'adelanto personal'},
-    {l:'Cuenta común', v:e.pagadoComun, c:'var(--k)', sub:'dinero del negocio'},
-  ].filter(x => x.v > 0);
 
   return `
   <div class="pagehead anim">
     <h1>${esc(e.id)} <span class="pill ${e.estado.toLowerCase()}">${esc(e.estado)}</span></h1>
     <div class="sub">Inicio ${fch(e.inicio)} · Fin ${e.fin?fch(e.fin):RAYA} ·
-      ${ent(e.dias)} día(s) · ${ent(e.nMovimientos)} gasto(s) · ${ent(e.nIngresos)} registro(s) de facturación</div>
+      ${ent(e.dias)} día(s) · ${ent(e.nMovimientos)} gasto(s) ·
+      ${ent(e.nIngresos)} registro(s) de facturación</div>
   </div>
+
+  ${metaHTML('Camino a 50.000 € de beneficio', e.beneficioNeto, OBJ_ESTRUCTURA,
+             'Profit de la estructura')}
 
   <div class="kpis hero anim">
     <div class="card kpi big ${neg?'neg':''}"><span class="trendbar ${neg?'neg':'pos'}"></span>
@@ -809,56 +788,21 @@ function paginaEst(id){
       <span class="foot">Margen ${pct(e.margen)}</span></div>
   </div>
 
-  <div class="mini c6 anim">
-    <div><span class="lbl eyebrow">Reembolsos</span><div class="v num">${eur0(e.reembolsos)}</div></div>
-    <div><span class="lbl eyebrow">Contracargos</span><div class="v num">${eur0(e.contracargos)}</div></div>
-    <div><span class="lbl eyebrow">Coste por € facturado</span><div class="v num">${ok(e.costePorEuro)?mult(e.costePorEuro).replace('x',''):RAYA}</div></div>
-    <div><span class="lbl eyebrow">Multiplicador</span><div class="v num">${mult(e.multiplicador)}</div></div>
-    <div><span class="lbl eyebrow">Facturación / día</span><div class="v num">${eur0(e.facturacionMediaDiaria)}</div></div>
-    <div><span class="lbl eyebrow">Profit / día</span><div class="v num" style="color:${neg?'var(--loss-t)':'var(--prof-t)'}">${eurS(e.profitMedioDiario)}</div></div>
-  </div>
-
   <section class="anim">
-    <div class="grid2">
-      <div class="chartcard"><h3>Desglose de la inversión</h3>
-        <p class="cap">Gastos directos por categoría. ${ok(e.pctPublicidad)&&e.pctPublicidad>0?`Publicidad: ${pct(e.pctPublicidad)} del total.`:''}</p>
-        ${barsH(e.categorias.map(c => ({l:c.nombre, v:c.importe, sub:pct(c.pct),
-            hot:c.nombre==='Publicidad',
-            c:c.nombre==='Publicidad'?'var(--spend-t)':'var(--spend)'})),
-          {vacio:'Todavía no hay gastos'})}
-      </div>
-      <div class="chartcard"><h3>Origen del dinero</h3>
-        <p class="cap">Quién puso cada euro. Lo pagado por la cuenta común <b>no</b> es adelanto de nadie.</p>
-        ${barsH(orig.map(o => ({l:o.l, v:o.v, c:o.c, sub:o.sub})),
-          {vacio:'Todavía no hay pagos'})}
-        <div class="legend"><span style="color:var(--ink-3);font-size:11.5px">
-          Adelanto personal ${eur0(e.adelantoM + e.adelantoC)} · Cuenta común ${eur0(e.pagadoComun)}</span></div>
-      </div>
-    </div>
+    <div class="sechead"><h2>Desglose de la inversión</h2>
+      <span class="note">${e.publicidad>0 && e.costeTotal>0
+        ? `Publicidad: ${pct(e.publicidad/e.costeTotal*100)} del total invertido`
+        : 'Dónde ha ido cada euro'}</span></div>
+    ${desgloseHTML(e.desglose, e.costeTotal,
+      'Gastos directos de la estructura más los gastos generales imputados a su período. '
+      + 'La suma cuadra exactamente con el total invertido de arriba.')}
   </section>
 
   <section class="anim">
-    <div class="grid2">
-      <div class="chartcard"><h3>Facturación diaria</h3>
-        <p class="cap">Bruta y neta día a día.</p><div id="c-fact"></div>
-        <div class="legend"><span><i style="background:var(--rev)"></i>Neta</span>
-          <span><i style="background:var(--alt)"></i>Bruta</span></div></div>
-      <div class="chartcard"><h3>Inversión acumulada</h3>
-        <p class="cap">Capital que ha ido necesitando la estructura.</p><div id="c-gasto"></div>
-        <div class="legend"><span><i style="background:var(--spend)"></i>Gasto acumulado</span>
-          <span><i style="background:var(--alt)"></i>Publicidad del día</span></div></div>
-    </div>
-  </section>
-
-  <section class="anim">
-    <div class="sechead"><h2>Beneficio acumulado</h2>
-      <span class="note">${e.breakeven?`Break-even alcanzado el ${fch(e.breakeven)}`:'Todavía sin break-even'}</span></div>
-    <div class="chartcard"><div id="c-acum"></div>
-      <div class="legend"><span><i style="background:var(--prof)"></i>Beneficio acumulado</span>
-        <span><i style="background:var(--rev)"></i>Facturación neta acumulada</span>
-        <span><i style="background:var(--spend)"></i>Inversión acumulada</span></div></div>
-  </section>
-  <script type="application/json" id="datosGraficos">${JSON.stringify({serie:e.serie, be:e.breakeven})}<\/script>`;
+    <div class="sechead"><h2>Origen del dinero</h2>
+      <span class="note">Quién puso cada euro</span></div>
+    ${origenHTML(e, e.costeTotal)}
+  </section>`;
 }
 
 /* ══════════════════════════════════════════════ ROUTER */
@@ -866,38 +810,8 @@ let actual = 'overview';
 function pintar(){
   document.getElementById('side').innerHTML = navHTML(actual);
   document.getElementById('topbar').innerHTML = topHTML(actual);
-  const v = document.getElementById('view');
-  v.innerHTML = actual === 'overview' ? overview() : paginaEst(actual);
-
-  const raw = document.getElementById('datosGraficos');
-  const dg = raw ? JSON.parse(raw.textContent) : {};
-
-  if (actual === 'overview'){
-    grouped(document.getElementById('c-invfac'), dg.cmp,
-      [{k:'inv',n:'Invertido',c:'var(--spend)'},{k:'fac',n:'Facturación neta',c:'var(--rev)'}],
-      {vacio:'Todavía no hay estructuras'});
-    diverging(document.getElementById('c-profit'), dg.cmp, {vacio:'Todavía no hay estructuras'});
-    lineChart(document.getElementById('c-evol'), dg.global,
-      [{k:'netaAcum',n:'Facturación neta',c:'var(--rev)'},
-       {k:'gastoAcum',n:'Inversión',c:'var(--spend)'},
-       {k:'profitAcum',n:'Beneficio',c:'var(--prof)',area:true}],
-      {h:250, vacio:'Todavía no hay movimientos', alt:'evolución acumulada del negocio'});
-  } else {
-    const s = dg.serie || [];
-    const hayFact = s.some(p => p.bruta || p.neta);
-    lineChart(document.getElementById('c-fact'), hayFact ? s : [],
-      [{k:'neta',n:'Neta',c:'var(--rev)',area:true},{k:'bruta',n:'Bruta',c:'var(--alt)'}],
-      {vacio:'Todavía no hay facturación registrada', alt:'facturación diaria'});
-    lineChart(document.getElementById('c-gasto'), s,
-      [{k:'gastoAcum',n:'Gasto acumulado',c:'var(--spend)',area:true},
-       {k:'publicidad',n:'Publicidad del día',c:'var(--alt)'}],
-      {vacio:'Todavía no hay gastos', alt:'inversión acumulada'});
-    lineChart(document.getElementById('c-acum'), s,
-      [{k:'profitAcum',n:'Beneficio acumulado',c:'var(--prof)',area:true},
-       {k:'netaAcum',n:'Facturación neta',c:'var(--rev)'},
-       {k:'gastoAcum',n:'Inversión',c:'var(--spend)'}],
-      {h:260, breakeven:dg.be, vacio:'Todavía no hay movimientos', alt:'beneficio acumulado'});
-  }
+  document.getElementById('view').innerHTML =
+    actual === 'overview' ? overview() : paginaEst(actual);
   scrollTo({top:0, behavior:'instant'});
 }
 document.addEventListener('click', ev => {
